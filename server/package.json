@@ -1,0 +1,15 @@
+{
+  "name": "Macao Game Backend",
+  "version": "0.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon ."
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.4"
+  }
+}
