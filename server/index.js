@@ -19,6 +19,15 @@ function generateDeck(containsJockers = false) {
   return out;
 }
 
+async function updateGame(gameId, callback) {
+  let game = await redis.get(gameId);
+  if (game === null) return;
+
+  game = JSON.parse(game);
+  callback(game);
+  await redis.set(gameId, JSON.stringify(game));
+}
+
 const io = new Server(3000, {
   cors: {
     origin: "*",
