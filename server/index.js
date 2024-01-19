@@ -61,8 +61,4 @@ io.on("connection", (socket) => {
     if (card !== null) io.to(socket.id).emit("receive-card", card);
     else io.emit("empty-deck");
   });
-
-  socket.on("draw", () => {
-    socket.emit("receive-cards", { value: 10, type: "clubs" });
-  });
 });
