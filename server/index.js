@@ -55,10 +55,10 @@ io.on("connection", (socket) => {
     console.log(res);
   });
 
-  socket.on("join-room", async (name) => {
-    let game = await redis.get(name);
+  socket.on("join-room", async (gameId) => {
+    let game = await redis.get(gameId);
     if (game === null) {
-      console.error(`Room ${name} doesen't exists`);
+      console.error(`Room ${gameId} doesen't exists`);
       return;
     }
 
@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
 
     await redis.set(name, JSON.stringify(game));
 
-    socket.join(name);
+    socket.join(gameId);
   });
 
   socket.on("hit", async () => {
