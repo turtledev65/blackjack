@@ -50,6 +50,18 @@ io.on("connection", (socket) => {
     socket.join(name);
   });
 
+  socket.on("hit", async () => {
+    let deckId = null;
+    socket.rooms.forEach((i) => {
+      if (i !== socket.id) deckId = i;
+    });
+    if (!deckId) return;
+
+    const card = await redis.rPop(deckId);
+    if (card !== null) io.to(socket.id).emit("receive-card", card);
+    else io.emit("empty-deck");
+  });
+
   socket.on("draw", () => {
     socket.emit("receive-cards", { value: 10, type: "clubs" });
   });
