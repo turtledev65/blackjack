@@ -28,6 +28,18 @@ const io = new Server(3000, {
 io.on("connection", (socket) => {
   console.log(socket.id, "connected");
 
+  socket.on("create-room", async (name) => {
+    const exists = await redis.exists(name);
+    if (exists) {
+      console.error(`Room ${name} already exists`);
+      return;
+    }
+
+    const stringifiedDeck = generateDeck().map((card) => JSON.stringify(card));
+    const res = await redis.rPush(name, stringifiedDeck);
+    console.log(res);
+  });
+
   socket.on("draw", () => {
     socket.emit("receive-cards", { value: 10, type: "clubs" });
   });
