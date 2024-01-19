@@ -35,30 +35,56 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const stringifiedDeck = generateDeck().map((card) => JSON.stringify(card));
-    const res = await redis.rPush(name, stringifiedDeck);
+    const deck = generateDeck();
+    const game = {
+      deck,
+      players: {
+        [socket.id]: { wallet: 1000, cards: deck.splice(-2, 2) },
+      },
+    };
+    const res = await redis.set(name, JSON.stringify(game));
     console.log(res);
   });
 
   socket.on("join-room", async (name) => {
-    const exists = await redis.exists(name);
-    if (!exists) {
+    let game = await redis.get(name);
+    if (game === null) {
       console.error(`Room ${name} doesen't exists`);
       return;
     }
+
+    game = JSON.parse(game);
+    game.players[socket.id] = { wallet: 1000, cards: game.deck.splice(-2, 2) };
+
+    await redis.set(name, JSON.stringify(game));
 
     socket.join(name);
   });
 
   socket.on("hit", async () => {
-    let deckId = null;
+    let gameId = null;
     socket.rooms.forEach((i) => {
-      if (i !== socket.id) deckId = i;
+      if (i !== socket.id) gameId = i;
     });
-    if (!deckId) return;
+    if (!gameId) return;
 
-    const card = await redis.rPop(deckId);
-    if (card !== null) io.to(socket.id).emit("receive-card", card);
-    else io.emit("empty-deck");
+    let game = await redis.get(gameId);
+    game = JSON.parse(game);
+
+    const player = game.players[socket.id];
+    const card = game.deck.pop();
+    if (!card) {
+      io.emit("empty-deck");
+      return;
+    }
+    player.cards.push(card);
+    await redis.set(gameId, JSON.stringify(game));
+
+    if (card) io.to(socket.id).emit("receive-card", card);
+
+    const sum = player.cards.reduce((acc, card) => acc + card.value, 0);
+    console.log(sum);
+    if (sum > 21) io.to(socket.id).emit("bust", sum);
+    else if (sum === 21) io.to(socket.id).emit("win");
   });
 });
