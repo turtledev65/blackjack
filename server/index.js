@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import redis from "./redis.js";
 
 function generateDeck(containsJockers = false) {
   const DECK_LENGTH = 52;
@@ -13,7 +14,7 @@ function generateDeck(containsJockers = false) {
     out.push({ value: 5, type: "jocker" }, { value: 10, type: "jocker" });
 
   // shuffle the deck
-  out.sort((_, _) => Math.random() - 0.5);
+  out.sort((_a, _b) => Math.random() - 0.5);
 
   return out;
 }
