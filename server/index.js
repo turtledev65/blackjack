@@ -40,6 +40,16 @@ io.on("connection", (socket) => {
     console.log(res);
   });
 
+  socket.on("join-room", async (name) => {
+    const exists = await redis.exists(name);
+    if (!exists) {
+      console.error(`Room ${name} doesen't exists`);
+      return;
+    }
+
+    socket.join(name);
+  });
+
   socket.on("draw", () => {
     socket.emit("receive-cards", { value: 10, type: "clubs" });
   });
