@@ -62,12 +62,17 @@ io.on("connection", (socket) => {
       return;
     }
 
-    game = JSON.parse(game);
-    game.players[socket.id] = { wallet: 1000, cards: game.deck.splice(-2, 2) };
-
-    await redis.set(name, JSON.stringify(game));
+    let playerCards = [];
+    await updateGame(gameId, (game) => {
+      playerCards = game.deck.splice(-2, 2);
+      game.players[socket.id] = {
+        wallet: 1000,
+        cards: playerCards,
+      };
+    });
 
     socket.join(gameId);
+    socket.emit("receive-card", playerCards);
   });
 
   socket.on("hit", async () => {
@@ -75,25 +80,19 @@ io.on("connection", (socket) => {
     socket.rooms.forEach((i) => {
       if (i !== socket.id) gameId = i;
     });
-    if (!gameId) return;
 
-    let game = await redis.get(gameId);
-    game = JSON.parse(game);
+    let score = 0;
+    let card = null;
+    await updateGame(gameId, (game) => {
+      const player = game.players[socket.id];
+      card = game.deck.pop();
+      player.cards.push(card);
 
-    const player = game.players[socket.id];
-    const card = game.deck.pop();
-    if (!card) {
-      io.emit("empty-deck");
-      return;
-    }
-    player.cards.push(card);
-    await redis.set(gameId, JSON.stringify(game));
+      score = player.cards.reduce((acc, card) => acc + card.value, 0);
+    });
 
-    if (card) io.to(socket.id).emit("receive-card", card);
-
-    const sum = player.cards.reduce((acc, card) => acc + card.value, 0);
-    console.log(sum);
-    if (sum > 21) io.to(socket.id).emit("bust", sum);
-    else if (sum === 21) io.to(socket.id).emit("win");
+    io.to(socket.id).emit("receive-card", card);
+    if (score > 21) io.to(socket.id).emit("lost", score);
+    else if (score === 21) io.to(socket.id).emit("won");
   });
 });
