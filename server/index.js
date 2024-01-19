@@ -54,8 +54,11 @@ io.on("connection", (socket) => {
         [socket.id]: { wallet: 1000, cards: playerCards },
       },
     };
-    const res = await redis.set(name, JSON.stringify(game));
-    console.log(res);
+    await redis.set(name, JSON.stringify(game));
+
+    socket.join(name);
+    socket.emit("receive-card", playerCards);
+    socket.emit("receive-dealer-card", dealerCards);
   });
 
   socket.on("join-room", async (gameId) => {
