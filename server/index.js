@@ -28,6 +28,15 @@ async function updateGame(gameId, callback) {
   await redis.set(gameId, JSON.stringify(game));
 }
 
+async function updatePlayer(gameId, playerId, callback) {
+  await updateGame(gameId, async (game) => {
+    const player = game.players.find((player) => player.id === playerId);
+    if (!player) return;
+
+    callback(player, game);
+  });
+}
+
 const io = new Server(3000, {
   cors: {
     origin: "*",
