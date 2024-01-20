@@ -45,19 +45,17 @@ io.on("connection", (socket) => {
     }
 
     const deck = generateDeck();
-    const playerCards = deck.splice(-2, 2);
     const dealerCards = deck.splice(-2, 2);
     const game = {
       deck,
       dealerCards,
       players: {
-        [socket.id]: { wallet: 1000, cards: playerCards, bet: 0 },
+        [socket.id]: { wallet: 1000, cards: [], bet: 0 },
       },
     };
     await redis.set(name, JSON.stringify(game));
 
     socket.join(name);
-    socket.emit("receive-card", playerCards);
     socket.emit("receive-dealer-card", dealerCards);
   });
 
@@ -68,20 +66,17 @@ io.on("connection", (socket) => {
       return;
     }
 
-    let playerCards = [];
     let dealerCards = [];
     await updateGame(gameId, (game) => {
-      playerCards = game.deck.splice(-2, 2);
       dealerCards = game.dealerCards;
       game.players[socket.id] = {
         wallet: 1000,
-        cards: playerCards,
+        cards: [],
         bet: 0,
       };
     });
 
     socket.join(gameId);
-    socket.emit("receive-card", playerCards);
     socket.emit("receive-dealer-card", dealerCards);
   });
 
@@ -95,13 +90,17 @@ io.on("connection", (socket) => {
     const betValue = Number(value);
     if (isNaN(betValue)) return;
 
+    let playerCards = [];
     await updateGame(gameId, (game) => {
       const player = game.players[socket.id];
       if (betValue <= player.wallet) {
+        playerCards = game.deck.splice(-2, 2);
         player.wallet -= betValue;
         player.bet = betValue;
+        player.cards = playerCards;
       }
     });
+    socket.emit("receive-card", playerCards);
   });
 
   socket.on("hit", async () => {
