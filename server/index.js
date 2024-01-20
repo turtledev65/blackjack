@@ -49,9 +49,7 @@ io.on("connection", (socket) => {
     const game = {
       deck,
       dealerCards,
-      players: {
-        [socket.id]: { wallet: 1000, cards: [], bet: 0 },
-      },
+      players: [{ wallet: 1000, bet: 0, cards: [], id: socket.id }],
     };
     await redis.set(name, JSON.stringify(game));
 
@@ -69,11 +67,7 @@ io.on("connection", (socket) => {
     let dealerCards = [];
     await updateGame(gameId, (game) => {
       dealerCards = game.dealerCards;
-      game.players[socket.id] = {
-        wallet: 1000,
-        cards: [],
-        bet: 0,
-      };
+      game.players.push({ wallet: 1000, bet: 0, cards: [], id: socket.id });
     });
 
     socket.join(gameId);
@@ -92,7 +86,7 @@ io.on("connection", (socket) => {
 
     let playerCards = [];
     await updateGame(gameId, (game) => {
-      const player = game.players[socket.id];
+      const player = game.players.find((player) => player.id === socket.id);
       if (betValue <= player.wallet) {
         playerCards = game.deck.splice(-2, 2);
         player.wallet -= betValue;
@@ -112,7 +106,7 @@ io.on("connection", (socket) => {
     let score = 0;
     let card = null;
     await updateGame(gameId, (game) => {
-      const player = game.players[socket.id];
+      const player = game.players.find((player) => player.id === socket.id);
       card = game.deck.pop();
       player.cards.push(card);
 
