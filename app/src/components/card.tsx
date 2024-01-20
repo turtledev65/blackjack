@@ -15,7 +15,6 @@ import {
 
 const Card = ({ value, type, rotation }: CardProps) => {
   const Icon = (() => {
-    console.log("Icon called with type", type);
     if (type === "clubs") return Clubs;
     else if (type === "diamonds") return Diamonds;
     else if (type === "spades") return Spades;
@@ -30,7 +29,10 @@ const Card = ({ value, type, rotation }: CardProps) => {
   })();
 
   return (
-    <div className="aspect-2/3 w-44 rounded bg-white p-2 text-xl" style={{transform: `rotate(${rotation}deg)`}} >
+    <div
+      className="aspect-2/3 w-44 rounded bg-white p-2 text-xl"
+      style={{ transform: `rotate(${rotation}deg)` }}
+    >
       <div className="relative h-full w-full">
         <div
           className={`absolute left-0 top-0 flex flex-col items-center justify-center font-bold ${
