@@ -94,8 +94,7 @@ io.on("connection", (socket) => {
     if (isNaN(betValue)) return;
 
     let playerCards = [];
-    await updateGame(gameId, (game) => {
-      const player = game.players.find((player) => player.id === socket.id);
+    await updatePlayer(gameId, socket.id, (player, game) => {
       if (betValue <= player.wallet) {
         playerCards = game.deck.splice(-2, 2);
         player.wallet -= betValue;
@@ -114,8 +113,7 @@ io.on("connection", (socket) => {
 
     let score = 0;
     let card = null;
-    await updateGame(gameId, (game) => {
-      const player = game.players.find((player) => player.id === socket.id);
+    await updatePlayer(gameId, socket.id, (player, game) => {
       card = game.deck.pop();
       player.cards.push(card);
 
