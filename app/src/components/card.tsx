@@ -3,6 +3,7 @@ type CardType = "clubs" | "diamonds" | "hearts" | "spades";
 type CardProps = {
   value: number;
   type: CardType;
+  rotation?: number;
 };
 
 import {
@@ -12,7 +13,7 @@ import {
   ImSpades as Spades
 } from "react-icons/im";
 
-const Card = ({ value, type }: CardProps) => {
+const Card = ({ value, type, rotation }: CardProps) => {
   const Icon = (() => {
     console.log("Icon called with type", type);
     if (type === "clubs") return Clubs;
@@ -29,7 +30,7 @@ const Card = ({ value, type }: CardProps) => {
   })();
 
   return (
-    <div className="aspect-2/3 w-44 rounded bg-white p-2 text-xl">
+    <div className="aspect-2/3 w-44 rounded bg-white p-2 text-xl" style={{transform: `rotate(${rotation}deg)`}} >
       <div className="relative h-full w-full">
         <div
           className={`absolute left-0 top-0 flex flex-col items-center justify-center font-bold ${
