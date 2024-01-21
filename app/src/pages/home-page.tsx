@@ -6,7 +6,7 @@ const HomePage = () => {
         <button className="rounded bg-blue-500 py-2 text-xl hover:bg-blue-600">
           Create Room
         </button>
-        <button className="rounded bg-green-500 py-2 text-xl hover:bg-yellow-600">
+        <button className="rounded bg-green-500 py-2 text-xl hover:bg-green-600">
           Join Room
         </button>
         <button className="rounded bg-gray-400 py-2 text-xl hover:bg-gray-500">
