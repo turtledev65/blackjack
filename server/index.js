@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
   socket.on("create-room", async (name) => {
     const exists = await redis.exists(name);
     if (exists) {
-      console.error(`Room ${name} already exists`);
+      socket.emit("room-exists", `Room: ${name} already exists`);
       return;
     }
 
