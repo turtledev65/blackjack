@@ -64,6 +64,7 @@ io.on("connection", (socket) => {
 
     socket.join(name);
     socket.emit("receive-dealer-card", dealerCards);
+    socket.emit("room-joined", name);
   });
 
   socket.on("join-room", async (gameId) => {
@@ -81,6 +82,7 @@ io.on("connection", (socket) => {
 
     socket.join(gameId);
     socket.emit("receive-dealer-card", dealerCards);
+    socket.emit("room-joined", gameId);
   });
 
   socket.on("bet", async (value) => {
