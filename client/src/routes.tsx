@@ -4,6 +4,7 @@ import TestPage from "./pages/test-page";
 import HomePage from "./pages/home-page";
 import CreateRoomPage from "./pages/create-room-page";
 import JoinRoomPage from "./pages/join-room-page";
+import GamePage from "./pages/game-page";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,8 @@ const router = createBrowserRouter([
         path: "room",
         children: [
           { path: "create", element: <CreateRoomPage /> },
-          { path: "join", element: <JoinRoomPage /> }
+          { path: "join", element: <JoinRoomPage /> },
+          { path: ":name", element: <GamePage /> }
         ]
       },
       { path: "test", element: <TestPage /> }
