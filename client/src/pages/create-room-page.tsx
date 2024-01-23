@@ -1,12 +1,26 @@
 import React, { useEffect, useRef } from "react";
 import socket from "../utils/socket";
+import toast, { Toaster } from "react-hot-toast";
+
 const CreateRoomPage = () => {
   const nameRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    socket.on("room-exists", msg => {
+      toast.error(msg, { duration: 3000 });
+    });
+
+    return () => {
+      socket.off("room-exists");
+    };
+  }, []);
+
   const handleCreateRoom = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const gameName = nameRef.current?.value?.trim();
     if (gameName) socket.emit("create-room", gameName);
   };
+
   return (
     <form
       onSubmit={handleCreateRoom}
@@ -29,6 +43,7 @@ const CreateRoomPage = () => {
       >
         Create Room
       </button>
+      <Toaster />
     </form>
   );
 };
