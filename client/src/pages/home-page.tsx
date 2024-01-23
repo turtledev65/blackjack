@@ -6,13 +6,13 @@ const HomePage = () => {
       <h1 className="text-6xl">Blackjack</h1>
       <div className="flex w-full max-w-xl flex-col justify-center gap-6">
         <Link
-          to="create-room"
+          to="/room/create"
           className="rounded bg-blue-500 py-2 text-xl hover:bg-blue-600"
         >
           Create Room
         </Link>
         <Link
-          to="join-room"
+          to="/room/join"
           className="rounded bg-green-500 py-2 text-xl hover:bg-green-600"
         >
           Join Room
