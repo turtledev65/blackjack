@@ -1,9 +1,7 @@
-import { useParams } from "react-router-dom";
 import { useState } from "react";
 import socket from "../utils/socket";
 
 const GamePage = () => {
-  const { name } = useParams();
 
   return <div>Game: {name}</div>;
 type BetFormProps = {
