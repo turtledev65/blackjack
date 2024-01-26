@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
   socket.on("create-room", async (name) => {
     const exists = await redis.exists(name);
     if (exists) {
-      socket.emit("room-exists", `Room: ${name} already exists`);
+      socket.emit("error", `Room: ${name} already exists`);
       return;
     }
 
@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
   socket.on("join-room", async (gameId) => {
     let game = await redis.get(gameId);
     if (game === null) {
-      socket.emit("room-not-found", `Was not able to find room ${gameId}`);
+      socket.emit("error", `Was not able to find room ${gameId}`);
       return;
     }
 
