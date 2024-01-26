@@ -6,6 +6,16 @@ import { Card } from "../types";
 const GamePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
 
+  useEffect(() => {
+    socket.on("receive-cards", newCards =>
+      setCards(prevCards => [...prevCards, ...newCards])
+    );
+
+    return () => {
+      socket.off("receive-cards");
+    };
+  }, []);
+
   return (
     <div className="absolute bottom-5 left-0 right-0 flex justify-center">
       <div className="flex flex-col items-center gap-4">
