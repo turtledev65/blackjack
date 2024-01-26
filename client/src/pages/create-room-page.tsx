@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import socket from "../utils/socket";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const CreateRoomPage = () => {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -50,7 +50,6 @@ const CreateRoomPage = () => {
       >
         Create Room
       </button>
-      <Toaster />
     </form>
   );
 };
