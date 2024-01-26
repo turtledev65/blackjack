@@ -1,4 +1,3 @@
-import { randomRange } from "../utils/random";
 import CardComponent from "./card";
 
 type CardType = "clubs" | "diamonds" | "hearts" | "spades";
@@ -18,10 +17,9 @@ const CardContainer = ({ cards }: CardContainerProps) => {
       <div className="invisible aspect-2/3 w-44"></div>
       {cards.map((card, index) => (
         <div
-          className="absolute"
+          className="absolute top-0"
           style={{
-            top: `${index * 2}rem`,
-            rotate: `${randomRange(-10, 10)}deg`
+            left: `${index * 2}rem`,
           }}
           key={index}
         >
