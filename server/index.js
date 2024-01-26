@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
   socket.on("join-room", async (gameId) => {
     let game = await redis.get(gameId);
     if (game === null) {
-      console.error(`Room ${gameId} doesen't exists`);
+      socket.emit("room-not-found", `Was not able to find room ${gameId}`);
       return;
     }
 
