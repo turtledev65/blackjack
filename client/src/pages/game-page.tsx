@@ -1,9 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import socket from "../utils/socket";
+import CardContainer from "../components/card-container";
+import { Card } from "../types";
 
 const GamePage = () => {
+  const [cards, setCards] = useState<Card[]>([]);
 
-  return <div>Game: {name}</div>;
+  return (
+    <div className="absolute bottom-5 left-0 right-0 flex justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <CardContainer cards={cards} />
+        <BetForm minAmmount={10} maxAmmount={1000} />
+      </div>
+    </div>
+  );
+};
+
 type BetFormProps = {
   minAmmount: number;
   maxAmmount: number;
