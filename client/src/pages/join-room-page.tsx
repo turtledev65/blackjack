@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import socket from "../utils/socket";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 
 const JoinRoomPage = () => {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -12,13 +11,8 @@ const JoinRoomPage = () => {
       navigate(`/room/${name}`);
     });
 
-    socket.on("room-not-found", msg => {
-      toast.error(msg, { duration: 3000 });
-    });
-
     return () => {
       socket.off("room-joined");
-      socket.off("room-not-found");
     };
   }, []);
 
