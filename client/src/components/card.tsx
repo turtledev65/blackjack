@@ -1,42 +1,40 @@
-type CardType = "clubs" | "diamonds" | "hearts" | "spades";
-
-type CardProps = {
-  value: number;
-  type: CardType;
-  rotation?: number;
-};
-
 import {
   ImClubs as Clubs,
   ImHeart as Hearts,
   ImDiamonds as Diamonds,
   ImSpades as Spades
 } from "react-icons/im";
+import { Card as CardType } from "../types";
 
-const Card = ({ value, type, rotation }: CardProps) => {
+type CardProps = {
+  card: CardType;
+  rotation?: number;
+};
+
+const Card = ({ card, rotation }: CardProps) => {
   const Icon = (() => {
-    if (type === "clubs") return Clubs;
-    else if (type === "diamonds") return Diamonds;
-    else if (type === "spades") return Spades;
+    if (card.type === "clubs") return Clubs;
+    else if (card.type === "diamonds") return Diamonds;
+    else if (card.type === "spades") return Spades;
     else return Hearts;
   })();
   const label = (() => {
-    if (value <= 10) return value;
-    if (value === 11) return "J";
-    else if (value === 12) return "Q";
-    else if (value === 13) return "K";
+    if (card.value <= 10) return card.value;
+    if (card.value === 11) return "J";
+    else if (card.value === 12) return "Q";
+    else if (card.value === 13) return "K";
     else return "A";
   })();
 
   return (
     <div
-      className="border-black border-2 aspect-2/3 w-44 rounded bg-white p-2 text-xl"
+      className="aspect-2/3 w-44 rounded border-2 border-black bg-white p-2 text-xl"
       style={{ transform: `rotate(${rotation}deg)` }}
     >
       <div className="relative h-full w-full">
         <div
           className={`absolute left-0 top-0 flex flex-col items-center justify-center font-bold ${
-            type === "hearts" || type === "diamonds"
+            card.type === "hearts" || card.type === "diamonds"
               ? "text-red-500"
               : "text-black"
           }`}
@@ -46,7 +44,7 @@ const Card = ({ value, type, rotation }: CardProps) => {
         </div>
         <div
           className={`absolute bottom-0 right-0 flex rotate-180 flex-col items-center justify-center font-bold ${
-            type === "hearts" || type === "diamonds"
+            card.type === "hearts" || card.type === "diamonds"
               ? "text-red-500"
               : "text-black"
           }`}

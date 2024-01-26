@@ -1,11 +1,5 @@
+import { Card } from "../types";
 import CardComponent from "./card";
-
-type CardType = "clubs" | "diamonds" | "hearts" | "spades";
-
-type Card = {
-  value: number;
-  type: CardType;
-};
 
 type CardContainerProps = {
   cards: Card[];
@@ -19,11 +13,11 @@ const CardContainer = ({ cards }: CardContainerProps) => {
         <div
           className="absolute top-0"
           style={{
-            left: `${index * 2}rem`,
+            left: `${index * 2}rem`
           }}
           key={index}
         >
-          <CardComponent value={card.value} type={card.type} />
+          <CardComponent card={card} />
         </div>
       ))}
     </div>
