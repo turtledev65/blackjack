@@ -104,7 +104,7 @@ io.on("connection", (socket) => {
         player.cards = playerCards;
       }
     });
-    socket.emit("receive-card", playerCards);
+    socket.emit("receive-cards", [...playerCards]);
   });
 
   socket.on("hit", async () => {
@@ -122,7 +122,7 @@ io.on("connection", (socket) => {
       score = player.cards.reduce((acc, card) => acc + card.value, 0);
     });
 
-    io.to(socket.id).emit("receive-card", card);
+    io.to(socket.id).emit("receive-cards", [card]);
     if (score > 21) io.to(socket.id).emit("lost", score);
     else if (score === 21) io.to(socket.id).emit("won");
   });
