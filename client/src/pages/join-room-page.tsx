@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import socket from "../utils/socket";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const JoinRoomPage = () => {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -11,15 +12,19 @@ const JoinRoomPage = () => {
       navigate(`/room/${name}`);
     });
 
+    socket.on("room-not-found", msg => {
+      toast.error(msg, { duration: 3000 });
+    });
+
     return () => {
       socket.off("room-joined");
+      socket.off("room-not-found");
     };
   }, []);
 
   const handleJoinRoom = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const gameName = nameRef.current?.value?.trim();
-    console.log(gameName);
     if (gameName) socket.emit("join-room", gameName);
   };
 
@@ -45,6 +50,7 @@ const JoinRoomPage = () => {
       >
         Join Room
       </button>
+      <Toaster />
     </form>
   );
 };
