@@ -4,13 +4,17 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon ."
+    "build": "npx tsc",
+    "start": "node dist/",
+    "dev": "nodemon -I --exec node --experimental-specifier-resolution=node --loader ts-node/esm index.ts"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.0.3",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "redis": "^4.6.12",
-    "socket.io": "^4.7.4"
+    "socket.io": "^4.7.4",
+    "ts-node": "^10.9.2"
   }
 }
