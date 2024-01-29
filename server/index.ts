@@ -1,14 +1,33 @@
 import { Server } from "socket.io";
 import redis from "./redis.js";
 
+const SUITS = ["clubs", "spades", "diamonds", "hearts"] as const;
+type Suit = typeof SUITS;
+type Card = {
+  value: number;
+  suit: Suit;
+};
+
+type Player = {
+  wallet: number;
+  bet: number;
+  cards: Card[];
+  id: string;
+};
+
+type Game = {
+  deck: Card[];
+  dealerCards: Card[];
+  players: Player[];
+};
+
 function generateDeck() {
   const DECK_LENGTH = 52;
   const CARDS_PER_SUIT = 13;
-  const types = ["clubs", "spades", "diamonds", "hearts"];
 
-  const out = new Array(DECK_LENGTH).fill().map((_, index) => ({
+  const out = new Array(DECK_LENGTH).fill(undefined).map((_, index) => ({
     value: (index % CARDS_PER_SUIT) + 1, // make the value wrap between 1 and 13 based on the index
-    type: types[index % types.length], // set the type based on the current index
+    type: SUITS[index % SUITS.length], // set the type based on the current index
   }));
 
   // shuffle the deck
@@ -17,16 +36,20 @@ function generateDeck() {
   return out;
 }
 
-async function updateGame(gameId, callback) {
-  let game = await redis.get(gameId);
-  if (game === null) return;
+async function updateGame(gameId: string, callback: (gameName: Game) => void) {
+  let gameString = await redis.get(gameId);
+  if (gameString === null) return;
 
-  game = JSON.parse(game);
+  let game = JSON.parse(gameString) as Game;
   callback(game);
   await redis.set(gameId, JSON.stringify(game));
 }
 
-async function updatePlayer(gameId, playerId, callback) {
+async function updatePlayer(
+  gameId: string,
+  playerId: string,
+  callback: (player: Player, game: Game) => void,
+) {
   await updateGame(gameId, async (game) => {
     const player = game.players.find((player) => player.id === playerId);
     if (!player) return;
@@ -72,7 +95,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    let dealerCards = [];
+    let dealerCards: Card[] = [];
     await updateGame(gameId, (game) => {
       dealerCards = game.dealerCards;
       game.players.push({ wallet: 1000, bet: 0, cards: [], id: socket.id });
@@ -93,7 +116,7 @@ io.on("connection", (socket) => {
     const betValue = Number(value);
     if (isNaN(betValue)) return;
 
-    let playerCards = [];
+    let playerCards: Card[] = [];
     await updatePlayer(gameId, socket.id, (player, game) => {
       if (betValue <= player.wallet) {
         playerCards = game.deck.splice(-2, 2);
@@ -110,11 +133,13 @@ io.on("connection", (socket) => {
     socket.rooms.forEach((i) => {
       if (i !== socket.id) gameId = i;
     });
+    if (gameId === null) return;
 
     let score = 0;
     let card = null;
     await updatePlayer(gameId, socket.id, (player, game) => {
       card = game.deck.pop();
+      if (!card) return;
       player.cards.push(card);
 
       score = player.cards.reduce((acc, card) => acc + card.value, 0);
