@@ -114,16 +114,22 @@ io.on("connection", (socket) => {
     if (gameId === null) return;
 
     const betValue = Number(value);
-    if (isNaN(betValue)) return;
+    if (isNaN(betValue)) {
+      socket.emit("error", "Please enter a valid bet!");
+      return;
+    }
 
     let playerCards: Card[] = [];
     await updatePlayer(gameId, socket.id, (player, game) => {
-      if (betValue <= player.wallet) {
-        playerCards = game.deck.splice(-2, 2);
-        player.wallet -= betValue;
-        player.bet = betValue;
-        player.cards = playerCards;
+      if (betValue >= player.wallet) {
+        socket.emit("error", `You don't have enough money to bet $${betValue}`);
+        return;
       }
+
+      playerCards = game.deck.splice(-2, 2);
+      player.wallet -= betValue;
+      player.bet = betValue;
+      player.cards = playerCards;
     });
     socket.emit("receive-cards", [...playerCards]);
   });
