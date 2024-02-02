@@ -93,12 +93,19 @@ io.on("connection", (socket) => {
       return;
     }
 
+    const newPlayer = {
+      wallet: 1000,
+      bet: 0,
+      cards: [],
+      id: socket.id,
+    };
     await updateGame(gameId, (game) => {
-      game.players.push({ wallet: 1000, bet: 0, cards: [], id: socket.id });
+      game.players.push(newPlayer);
     });
 
     socket.join(gameId);
     socket.emit("room-joined", gameId);
+    socket.broadcast.emit("receive-new-player", newPlayer);
   });
 
   socket.on("bet", async (value) => {
