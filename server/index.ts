@@ -84,7 +84,6 @@ io.on("connection", (socket) => {
     await redis.set(name, JSON.stringify(game));
 
     socket.join(name);
-    socket.emit("receive-dealer-card", dealerCards);
     socket.emit("room-joined", name);
   });
 
@@ -102,7 +101,6 @@ io.on("connection", (socket) => {
     });
 
     socket.join(gameId);
-    socket.emit("receive-dealer-card", dealerCards);
     socket.emit("room-joined", gameId);
   });
 
@@ -138,6 +136,7 @@ io.on("connection", (socket) => {
           player.cards = game.deck.splice(-2, 2);
           io.to(player.id).emit("receive-cards", player.cards);
         });
+        io.emit("receive-dealer-card", game.deck.pop());
       }
     });
   });
