@@ -117,8 +117,6 @@ io.on("connection", (socket) => {
       return;
     }
 
-    let playerCards: Card[] = [];
-
     let allPlayersBet = false;
     await updatePlayer(gameId, socket.id, (player, game) => {
       if (betValue >= player.wallet) {
