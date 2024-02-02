@@ -157,4 +157,17 @@ io.on("connection", (socket) => {
     if (score > 21) io.to(socket.id).emit("lost", score);
     else if (score === 21) io.to(socket.id).emit("won");
   });
+
+  socket.on("disconnecting", async () => {
+    console.log(socket.id, "disconnected");
+    let gameId = null;
+    socket.rooms.forEach((i) => {
+      if (i !== socket.id) gameId = i;
+    });
+    if (gameId === null) return;
+
+    await updateGame(gameId, (game) => {
+      game.players = game.players.filter((player) => player.id !== socket.id);
+    });
+  });
 });
