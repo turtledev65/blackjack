@@ -75,10 +75,9 @@ io.on("connection", (socket) => {
     }
 
     const deck = generateDeck();
-    const dealerCards = deck.splice(-2, 2);
     const game = {
       deck,
-      dealerCards,
+      dealerCards: [],
       players: [{ wallet: 1000, bet: 0, cards: [], id: socket.id }],
     };
     await redis.set(name, JSON.stringify(game));
@@ -94,9 +93,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    let dealerCards: Card[] = [];
     await updateGame(gameId, (game) => {
-      dealerCards = game.dealerCards;
       game.players.push({ wallet: 1000, bet: 0, cards: [], id: socket.id });
     });
 
