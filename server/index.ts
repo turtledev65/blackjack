@@ -120,18 +120,26 @@ io.on("connection", (socket) => {
     }
 
     let playerCards: Card[] = [];
+
+    let allPlayersBet = false;
     await updatePlayer(gameId, socket.id, (player, game) => {
       if (betValue >= player.wallet) {
         socket.emit("error", `You don't have enough money to bet $${betValue}`);
         return;
       }
 
-      playerCards = game.deck.splice(-2, 2);
       player.wallet -= betValue;
       player.bet = betValue;
-      player.cards = playerCards;
+
+      allPlayersBet =
+        game.players.filter((player) => player.bet === 0).length === 0;
+      if (allPlayersBet) {
+        game.players.forEach((player) => {
+          player.cards = game.deck.splice(-2, 2);
+          io.to(player.id).emit("receive-cards", player.cards);
+        });
+      }
     });
-    socket.emit("receive-cards", [...playerCards]);
   });
 
   socket.on("hit", async () => {
