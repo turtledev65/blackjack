@@ -7,43 +7,20 @@ import React from "react";
 const GamePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
 
-  const [otherPlayers, setOtherPlayers] = useState<Player[]>([
-    {
-      wallet: 900,
-      cards: [
-        { type: "clubs", value: 100 },
-        { type: "clubs", value: 100 }
-      ],
-      id: "abc",
-      bet: 900
-    },
-    {
-      wallet: 900,
-      cards: [
-        { type: "hearts", value: 100 },
-        { type: "hearts", value: 100 }
-      ],
-      id: "abb",
-      bet: 900
-    },
-    {
-      wallet: 900,
-      cards: [
-        { type: "hearts", value: 100 },
-        { type: "hearts", value: 100 }
-      ],
-      id: "bbb",
-      bet: 900
-    }
-  ]);
+  const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
     socket.on("receive-cards", newCards =>
       setCards(prevCards => [...prevCards, ...newCards])
     );
 
+    socket.on("receive-new-player", newPlayer =>
+      setOtherPlayers(prevPlayers => [...prevPlayers, newPlayer])
+    );
+
     return () => {
       socket.off("receive-cards");
+      socket.off("receive-new-player");
     };
   }, []);
 
