@@ -1,10 +1,41 @@
 import { useEffect, useState } from "react";
 import socket from "../utils/socket";
 import CardContainer from "../components/card-container";
-import { Card } from "../types";
+import { Card, Player } from "../types";
+import React from "react";
 
 const GamePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
+
+  const [otherPlayers, setOtherPlayers] = useState<Player[]>([
+    {
+      wallet: 900,
+      cards: [
+        { type: "clubs", value: 100 },
+        { type: "clubs", value: 100 }
+      ],
+      id: "abc",
+      bet: 900
+    },
+    {
+      wallet: 900,
+      cards: [
+        { type: "hearts", value: 100 },
+        { type: "hearts", value: 100 }
+      ],
+      id: "abb",
+      bet: 900
+    },
+    {
+      wallet: 900,
+      cards: [
+        { type: "hearts", value: 100 },
+        { type: "hearts", value: 100 }
+      ],
+      id: "bbb",
+      bet: 900
+    }
+  ]);
 
   useEffect(() => {
     socket.on("receive-cards", newCards =>
@@ -18,9 +49,19 @@ const GamePage = () => {
 
   return (
     <div className="absolute bottom-5 left-0 right-0 flex justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <CardContainer cards={cards} />
-        <BetForm minAmmount={10} maxAmmount={1000} />
+      <div className="flex items-center gap-5">
+        {otherPlayers.map((player, i) => (
+          <div
+            className={`${i % 2 === 0 ? "order-first" : "order-last"}`}
+            key={player.id}
+          >
+            <CardContainer cards={player.cards} />
+          </div>
+        ))}
+        <div className="order-l mx-10 flex flex-col items-center gap-4">
+          <CardContainer cards={cards} />
+          <BetForm minAmmount={10} maxAmmount={1000} />
+        </div>
       </div>
     </div>
   );
