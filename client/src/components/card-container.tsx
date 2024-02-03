@@ -1,4 +1,5 @@
 import { Card } from "../types";
+import { randomRange } from "../utils/random";
 import CardComponent from "./card";
 
 type CardContainerProps = {
@@ -13,7 +14,8 @@ const CardContainer = ({ cards }: CardContainerProps) => {
         <div
           className="absolute top-0"
           style={{
-            left: `${index * 2}rem`
+            left: `${index * 2.5}rem`,
+            rotate: `${randomRange(-3, 3)}deg`
           }}
           key={index}
         >
