@@ -95,8 +95,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join-room", async (gameId) => {
-    let game = await redis.get(gameId);
-    if (game === null) {
+    const gameExists = await redis.exists(gameId);
+    if (!gameExists) {
       socket.emit("error", `Was not able to find room ${gameId}`);
       return;
     }
