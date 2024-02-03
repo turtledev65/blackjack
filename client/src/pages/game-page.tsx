@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import socket from "../utils/socket";
 import CardContainer from "../components/card-container";
 import { Card, Player } from "../types";
-import React from "react";
 
 const GamePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
@@ -10,6 +9,10 @@ const GamePage = () => {
   const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
+    socket.emit("get-other-players", (players: Player[]) => {
+      setOtherPlayers(players);
+    });
+
     socket.on("receive-cards", newCards =>
       setCards(prevCards => [...prevCards, ...newCards])
     );
