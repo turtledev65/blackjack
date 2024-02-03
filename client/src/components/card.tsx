@@ -28,7 +28,7 @@ const Card = ({ card, rotation }: CardProps) => {
 
   return (
     <div
-      className="aspect-2/3 w-44 rounded border-2 border-black bg-white p-2 text-xl"
+      className="aspect-2/3 w-44 rounded bg-white p-2 text-xl shadow-2xl"
       style={{ transform: `rotate(${rotation}deg)` }}
     >
       <div className="relative h-full w-full">
