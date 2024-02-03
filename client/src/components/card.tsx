@@ -31,7 +31,7 @@ const Card = ({ card, rotation }: CardProps) => {
       className="aspect-2/3 w-44 rounded bg-white p-2 text-xl shadow-2xl"
       style={{ transform: `rotate(${rotation}deg)` }}
     >
-      <div className="relative h-full w-full">
+      <div className="relative flex h-full w-full items-center justify-center">
         <div
           className={`absolute left-0 top-0 flex flex-col items-center justify-center font-bold ${
             card.type === "hearts" || card.type === "diamonds"
@@ -41,6 +41,15 @@ const Card = ({ card, rotation }: CardProps) => {
         >
           {label}
           <Icon />
+        </div>
+        <div>
+          <Icon
+            className={`text-9xl ${
+              card.type === "hearts" || card.type === "diamonds"
+                ? "text-red-500"
+                : "text-black"
+            }`}
+          />
         </div>
         <div
           className={`absolute bottom-0 right-0 flex rotate-180 flex-col items-center justify-center font-bold ${
