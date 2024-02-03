@@ -37,10 +37,9 @@ function generateDeck() {
 }
 
 async function updateGame(gameId: string, callback: (gameName: Game) => void) {
-  let gameString = await redis.get(gameId);
-  if (gameString === null) return;
+  const game = await getGame(gameId);
+  if (!game) return;
 
-  let game = JSON.parse(gameString) as Game;
   callback(game);
   await redis.set(gameId, JSON.stringify(game));
 }
@@ -51,6 +50,18 @@ function getGameId(socket: Socket) {
   }
 
   return null;
+}
+
+async function getGame(gameId: string) {
+  let game = await redis.get(gameId);
+  if (!game) return null;
+
+  try {
+    const out = JSON.parse(game) as Game;
+    return out;
+  } catch {
+    return null;
+  }
 }
 
 async function updatePlayer(
@@ -122,9 +133,8 @@ io.on("connection", (socket) => {
       const gameId = getGameId(socket);
       if (!gameId) return;
 
-      let gameString = await redis.get(gameId);
-      if (!gameString) return;
-      let game = JSON.parse(gameString) as Game;
+      const game = await getGame(gameId);
+      if (!game) return;
 
       const otherPlayers = game.players.filter(
         (player) => player.id !== socket.id,
