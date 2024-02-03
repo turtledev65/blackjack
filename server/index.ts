@@ -21,36 +21,6 @@ type Game = {
   players: Player[];
 };
 
-function generateDeck() {
-  const DECK_LENGTH = 52;
-  const CARDS_PER_SUIT = 13;
-
-  const out = new Array(DECK_LENGTH).fill(undefined).map((_, index) => ({
-    value: (index % CARDS_PER_SUIT) + 1, // make the value wrap between 1 and 13 based on the index
-    type: SUITS[index % SUITS.length], // set the type based on the current index
-  }));
-
-  // shuffle the deck
-  out.sort((_a, _b) => Math.random() - 0.5);
-
-  return out;
-}
-
-async function updateGame(
-  gameId: string,
-  callback: (gameName: Game) => void,
-  onError?: (msg: string) => void,
-) {
-  const game = await getGame(gameId);
-  if (!game) {
-    onError?.call(null, `Could not find game ${gameId}`);
-    return;
-  }
-
-  callback(game);
-  await redis.set(gameId, JSON.stringify(game));
-}
-
 function getGameId(socket: Socket) {
   for (const room of socket.rooms) {
     if (socket.id !== room) return room;
@@ -69,6 +39,21 @@ async function getGame(gameId: string) {
   } catch {
     return null;
   }
+}
+
+async function updateGame(
+  gameId: string,
+  callback: (gameName: Game) => void,
+  onError?: (msg: string) => void,
+) {
+  const game = await getGame(gameId);
+  if (!game) {
+    onError?.call(null, `Could not find game ${gameId}`);
+    return;
+  }
+
+  callback(game);
+  await redis.set(gameId, JSON.stringify(game));
 }
 
 async function updatePlayer(
@@ -90,6 +75,21 @@ async function updatePlayer(
     },
     onError,
   );
+}
+
+function generateDeck() {
+  const DECK_LENGTH = 52;
+  const CARDS_PER_SUIT = 13;
+
+  const out = new Array(DECK_LENGTH).fill(undefined).map((_, index) => ({
+    value: (index % CARDS_PER_SUIT) + 1, // make the value wrap between 1 and 13 based on the index
+    type: SUITS[index % SUITS.length], // set the type based on the current index
+  }));
+
+  // shuffle the deck
+  out.sort((_a, _b) => Math.random() - 0.5);
+
+  return out;
 }
 
 const io = new Server(3000, {
