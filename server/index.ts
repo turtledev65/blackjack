@@ -36,9 +36,16 @@ function generateDeck() {
   return out;
 }
 
-async function updateGame(gameId: string, callback: (gameName: Game) => void) {
+async function updateGame(
+  gameId: string,
+  callback: (gameName: Game) => void,
+  onError?: (msg: string) => void,
+) {
   const game = await getGame(gameId);
-  if (!game) return;
+  if (!game) {
+    onError?.call(null, `Could not find game ${gameId}`);
+    return;
+  }
 
   callback(game);
   await redis.set(gameId, JSON.stringify(game));
@@ -68,13 +75,21 @@ async function updatePlayer(
   gameId: string,
   playerId: string,
   callback: (player: Player, game: Game) => void,
+  onError?: (msg: string) => void,
 ) {
-  await updateGame(gameId, async (game) => {
-    const player = game.players.find((player) => player.id === playerId);
-    if (!player) return;
+  await updateGame(
+    gameId,
+    async (game) => {
+      const player = game.players.find((player) => player.id === playerId);
+      if (!player) {
+        onError?.call(null, `Could not find player ${playerId}`);
+        return;
+      }
 
-    callback(player, game);
-  });
+      callback(player, game);
+    },
+    onError,
+  );
 }
 
 const io = new Server(3000, {
