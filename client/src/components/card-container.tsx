@@ -7,7 +7,7 @@ type CardContainerProps = {
 
 const CardContainer = ({ cards }: CardContainerProps) => {
   return (
-    <div className="relative inline-block rounded border-8 border-white border-opacity-65 p-2">
+    <div className="relative inline-block p-2">
       <div className="invisible aspect-2/3 w-44"></div>
       {cards.map((card, index) => (
         <div
