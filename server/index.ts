@@ -108,6 +108,25 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("receive-new-player", newPlayer);
   });
 
+  socket.on(
+    "get-other-players",
+    async (callback: (otherPlayers: Player[]) => void) => {
+      let gameId = null;
+      socket.rooms.forEach((i) => {
+        if (i !== socket.id) gameId = i;
+      });
+      if (gameId === null) return;
+      let gameString = await redis.get(gameId);
+      if (!gameString) return;
+      let game = JSON.parse(gameString) as Game;
+
+      const otherPlayers = game.players.filter(
+        (player) => player.id !== socket.id,
+      );
+      callback(otherPlayers);
+    },
+  );
+
   socket.on("bet", async (value) => {
     let gameId = null;
     socket.rooms.forEach((i) => {
