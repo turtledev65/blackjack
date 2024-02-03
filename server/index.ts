@@ -1,4 +1,4 @@
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import redis from "./redis.js";
 
 const SUITS = ["clubs", "spades", "diamonds", "hearts"] as const;
@@ -43,6 +43,14 @@ async function updateGame(gameId: string, callback: (gameName: Game) => void) {
   let game = JSON.parse(gameString) as Game;
   callback(game);
   await redis.set(gameId, JSON.stringify(game));
+}
+
+function getGameId(socket: Socket) {
+  for (const room of socket.rooms) {
+    if (socket.id !== room) return room;
+  }
+
+  return null;
 }
 
 async function updatePlayer(
@@ -111,11 +119,9 @@ io.on("connection", (socket) => {
   socket.on(
     "get-other-players",
     async (callback: (otherPlayers: Player[]) => void) => {
-      let gameId = null;
-      socket.rooms.forEach((i) => {
-        if (i !== socket.id) gameId = i;
-      });
-      if (gameId === null) return;
+      const gameId = getGameId(socket);
+      if (!gameId) return;
+
       let gameString = await redis.get(gameId);
       if (!gameString) return;
       let game = JSON.parse(gameString) as Game;
@@ -128,11 +134,8 @@ io.on("connection", (socket) => {
   );
 
   socket.on("bet", async (value) => {
-    let gameId = null;
-    socket.rooms.forEach((i) => {
-      if (i !== socket.id) gameId = i;
-    });
-    if (gameId === null) return;
+    const gameId = getGameId(socket);
+    if (!gameId) return;
 
     const betValue = Number(value);
     if (isNaN(betValue)) {
@@ -163,11 +166,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("hit", async () => {
-    let gameId = null;
-    socket.rooms.forEach((i) => {
-      if (i !== socket.id) gameId = i;
-    });
-    if (gameId === null) return;
+    const gameId = getGameId(socket);
+    if (!gameId) return;
 
     let score = 0;
     let card = null;
@@ -186,11 +186,8 @@ io.on("connection", (socket) => {
 
   socket.on("disconnecting", async () => {
     console.log(socket.id, "disconnected");
-    let gameId = null;
-    socket.rooms.forEach((i) => {
-      if (i !== socket.id) gameId = i;
-    });
-    if (gameId === null) return;
+    const gameId = getGameId(socket);
+    if (!gameId) return;
 
     await updateGame(gameId, (game) => {
       game.players = game.players.filter((player) => player.id !== socket.id);
