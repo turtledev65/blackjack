@@ -7,6 +7,12 @@ type CardContainerProps = {
 };
 
 const CardContainer = ({ cards }: CardContainerProps) => {
+  if (!cards.length) {
+    return (
+      <div className="aspect-2/3 w-44 rounded border-8 border-dashed"></div>
+    );
+  }
+
   return (
     <div className="relative inline-block p-2">
       <div className="invisible aspect-2/3 w-44"></div>
