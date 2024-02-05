@@ -22,9 +22,26 @@ const GamePage = () => {
       setOtherPlayers(prevPlayers => [...prevPlayers, newPlayer])
     );
 
+    socket.on("receive-updated-player", updatedPlayer => {
+      setOtherPlayers(prevPlayers => {
+        const playerIndex = prevPlayers.findIndex(
+          player => player.id === updatedPlayer.id
+        );
+
+        if (playerIndex !== -1) {
+          const newPlayers = [...prevPlayers];
+          newPlayers[playerIndex] = updatedPlayer;
+          return newPlayers;
+        }
+
+        return prevPlayers;
+      });
+    });
+
     return () => {
       socket.off("receive-cards");
       socket.off("receive-new-player");
+      socket.off("receive-updated-player");
     };
   }, []);
 
