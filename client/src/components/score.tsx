@@ -10,7 +10,7 @@ const Score = ({ cards }: ScoreProps) => {
 
   return (
     <p
-      className={`bg-${bgColor} rounded bg-opacity-75 px-4 text-lg text-white`}
+      className={`bg-${bgColor} inline-block rounded bg-opacity-65 px-4 text-center text-xl font-bold text-white`}
     >
       {score}
     </p>
