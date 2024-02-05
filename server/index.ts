@@ -181,6 +181,7 @@ io.on("connection", (socket) => {
         game.players.forEach((player) => {
           player.cards = game.deck.splice(-2, 2);
           io.to(player.id).emit("receive-cards", player.cards);
+          io.except(player.id).emit("receive-updated-player", player);
         });
         io.emit("receive-dealer-card", game.deck.pop());
       }
