@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import socket from "../utils/socket";
 import CardContainer from "../components/card-container";
-import { Card, Player } from "../types";
+import { Card, Player as PlayerType } from "../types";
+import Score from "../components/score";
 
 const GamePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
 
-  const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
+  const [otherPlayers, setOtherPlayers] = useState<PlayerType[]>([]);
 
   useEffect(() => {
-    socket.emit("get-other-players", (players: Player[]) => {
+    socket.emit("get-other-players", (players: PlayerType[]) => {
       setOtherPlayers(players);
     });
 
@@ -35,7 +36,7 @@ const GamePage = () => {
             className={`${i % 2 === 0 ? "order-first" : "order-last"}`}
             key={player.id}
           >
-            <CardContainer cards={player.cards} />
+            <Player cards={player.cards} bet={player.bet} />
           </div>
         ))}
         <div className="order-l mx-10 flex flex-col items-center gap-4">
@@ -43,6 +44,27 @@ const GamePage = () => {
           <BetForm minAmmount={10} maxAmmount={1000} />
         </div>
       </div>
+    </div>
+  );
+};
+
+type PlayerProps = {
+  cards: Card[];
+  bet: number;
+};
+
+const Player = ({ cards, bet }: PlayerProps) => {
+  return (
+    <div>
+      {cards.length > 0 && (
+        <div className="mb-2 flex justify-center">
+          <Score cards={cards} />
+        </div>
+      )}
+      <CardContainer cards={cards} />
+      {bet > 0 && (
+        <p className="mt-1 text-center text-3xl font-bold text-white">${bet}</p>
+      )}
     </div>
   );
 };
