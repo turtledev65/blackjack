@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import socket from "../utils/socket";
 import CardContainer from "../components/card-container";
-import { Card, Player as PlayerType } from "../types";
+import { Card as CardType, Player as PlayerType } from "../types";
 import Score from "../components/score";
+import Card from "../components/card";
+import { randomRange } from "../utils/random";
 
 const GamePage = () => {
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<CardType[]>([]);
 
   const [otherPlayers, setOtherPlayers] = useState<PlayerType[]>([]);
 
@@ -46,27 +48,32 @@ const GamePage = () => {
   }, []);
 
   return (
-    <div className="absolute bottom-5 left-0 right-0 flex justify-center">
-      <div className="flex items-center gap-5">
-        {otherPlayers.map((player, i) => (
-          <div
-            className={`${i % 2 === 0 ? "order-first" : "order-last"}`}
-            key={player.id}
-          >
-            <Player cards={player.cards} bet={player.bet} />
+    <>
+      <div className="mt-8 flex items-center justify-center">
+        <Dealer />
+      </div>
+      <div className="absolute bottom-5 left-0 right-0 flex justify-center">
+        <div className="flex items-center gap-5">
+          {otherPlayers.map((player, i) => (
+            <div
+              className={`${i % 2 === 0 ? "order-first" : "order-last"}`}
+              key={player.id}
+            >
+              <Player cards={player.cards} bet={player.bet} />
+            </div>
+          ))}
+          <div className="order-l mx-10 flex flex-col items-center gap-4">
+            <CardContainer cards={cards} />
+            <BetForm minAmmount={10} maxAmmount={1000} />
           </div>
-        ))}
-        <div className="order-l mx-10 flex flex-col items-center gap-4">
-          <CardContainer cards={cards} />
-          <BetForm minAmmount={10} maxAmmount={1000} />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 type PlayerProps = {
-  cards: Card[];
+  cards: CardType[];
   bet: number;
 };
 
@@ -82,6 +89,62 @@ const Player = ({ cards, bet }: PlayerProps) => {
       {bet > 0 && (
         <p className="mt-1 text-center text-3xl font-bold text-white">${bet}</p>
       )}
+    </div>
+  );
+};
+
+const Dealer = () => {
+  const [cards, setCards] = useState<CardType[]>([]);
+
+  useEffect(() => {
+    socket.on("receive-dealer-card", newCard => {
+      setCards(prevCards => [...prevCards, newCard]);
+    });
+
+    return () => {
+      socket.off("receive-dealer-card");
+    };
+  }, []);
+
+  if (cards.length === 0) return null;
+  else if (cards.length === 1)
+    return (
+      <div className="relative inline-block">
+        <div className="invisible aspect-2/3 w-44"></div>
+        <div
+          className="absolute top-0"
+          style={{
+            rotate: `${randomRange(-3, 3)}deg`
+          }}
+        >
+          <Card value={cards[0].value} type={cards[0].type} />
+        </div>
+        <div
+          className="absolute left-10 top-0"
+          style={{
+            rotate: `${randomRange(-3, 3)}deg`
+          }}
+        >
+          <Card value={2} type="clubs" flipped />
+        </div>
+      </div>
+    );
+
+  return (
+    <div className="relative inline-block">
+      <div className="invisible aspect-2/3 w-44"></div>
+      {cards.map((card, index) => (
+        <div
+          className="absolute top-0"
+          style={{
+            left: `${index * 2.5}rem`,
+            rotate: `${randomRange(-3, 3)}deg`
+          }}
+          key={index}
+        >
+          <Card value={card.value} type={card.type} />
+        </div>
+      ))}
     </div>
   );
 };
