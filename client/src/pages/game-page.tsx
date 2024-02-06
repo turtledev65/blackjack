@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import socket from "../utils/socket";
 import CardContainer from "../components/card-container";
-import { Card as CardType, Player as PlayerType } from "../types";
+import { Card, Player as PlayerType } from "../types";
 import Score from "../components/score";
-import Card from "../components/card";
-import { randomRange } from "../utils/random";
 
 const GamePage = () => {
-  const [cards, setCards] = useState<CardType[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
 
   const [otherPlayers, setOtherPlayers] = useState<PlayerType[]>([]);
 
@@ -73,7 +71,7 @@ const GamePage = () => {
 };
 
 type PlayerProps = {
-  cards: CardType[];
+  cards: Card[];
   bet: number;
 };
 
@@ -94,7 +92,7 @@ const Player = ({ cards, bet }: PlayerProps) => {
 };
 
 const Dealer = () => {
-  const [cards, setCards] = useState<CardType[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
 
   useEffect(() => {
     socket.on("receive-dealer-card", newCard => {
@@ -108,45 +106,9 @@ const Dealer = () => {
 
   if (cards.length === 0) return null;
   else if (cards.length === 1)
-    return (
-      <div className="relative inline-block">
-        <div className="invisible aspect-2/3 w-44"></div>
-        <div
-          className="absolute top-0"
-          style={{
-            rotate: `${randomRange(-3, 3)}deg`
-          }}
-        >
-          <Card value={cards[0].value} type={cards[0].type} />
-        </div>
-        <div
-          className="absolute left-10 top-0"
-          style={{
-            rotate: `${randomRange(-3, 3)}deg`
-          }}
-        >
-          <Card flipped />
-        </div>
-      </div>
-    );
+    return <CardContainer cards={cards} flippedCards={1} />;
 
-  return (
-    <div className="relative inline-block">
-      <div className="invisible aspect-2/3 w-44"></div>
-      {cards.map((card, index) => (
-        <div
-          className="absolute top-0"
-          style={{
-            left: `${index * 2.5}rem`,
-            rotate: `${randomRange(-3, 3)}deg`
-          }}
-          key={index}
-        >
-          <Card value={card.value} type={card.type} />
-        </div>
-      ))}
-    </div>
-  );
+  return <CardContainer cards={cards} />;
 };
 
 type BetFormProps = {
