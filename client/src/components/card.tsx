@@ -6,9 +6,26 @@ import {
 } from "react-icons/im";
 import { Card as CardType } from "../types";
 
-type CardProps = CardType & { flipped?: boolean };
+type NormalCard = {
+  flipped?: false;
+} & CardType;
+
+type FlippedCard = {
+  flipped: true;
+} & {
+  [key in keyof CardType]?: never;
+};
+
+type CardProps = NormalCard | FlippedCard;
 
 const Card = ({ value, type, flipped }: CardProps) => {
+  if (flipped)
+    return (
+      <div className="flex aspect-2/3 w-44 select-none items-center justify-center rounded border-8 border-red-400 bg-white p-2 text-xl shadow-2xl">
+        <Hearts className="text-9xl text-red-600" />
+      </div>
+    );
+
   const Icon = (() => {
     if (type === "clubs") return Clubs;
     else if (type === "diamonds") return Diamonds;
@@ -22,13 +39,6 @@ const Card = ({ value, type, flipped }: CardProps) => {
     else if (value === 13) return "K";
     else return "A";
   })();
-
-  if (flipped)
-    return (
-      <div className="flex aspect-2/3 w-44 select-none items-center justify-center rounded border-8 border-red-400 bg-white p-2 text-xl shadow-2xl">
-        <Hearts className="text-9xl text-red-600" />
-      </div>
-    );
 
   return (
     <div className="aspect-2/3 w-44 select-none rounded bg-white p-2 text-xl shadow-2xl">

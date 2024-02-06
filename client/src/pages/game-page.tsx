@@ -125,7 +125,7 @@ const Dealer = () => {
             rotate: `${randomRange(-3, 3)}deg`
           }}
         >
-          <Card value={2} type="clubs" flipped />
+          <Card flipped />
         </div>
       </div>
     );
