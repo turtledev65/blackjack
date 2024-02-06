@@ -4,24 +4,20 @@ import {
   ImDiamonds as Diamonds,
   ImSpades as Spades
 } from "react-icons/im";
-import { Card as CardType } from "../types";
+import { Card as CardProps } from "../types";
 
-type CardProps = {
-  card: CardType;
-};
-
-const Card = ({ card }: CardProps) => {
+const Card = ({ value, type }: CardProps) => {
   const Icon = (() => {
-    if (card.type === "clubs") return Clubs;
-    else if (card.type === "diamonds") return Diamonds;
-    else if (card.type === "spades") return Spades;
+    if (type === "clubs") return Clubs;
+    else if (type === "diamonds") return Diamonds;
+    else if (type === "spades") return Spades;
     else return Hearts;
   })();
   const label = (() => {
-    if (card.value <= 10) return card.value;
-    if (card.value === 11) return "J";
-    else if (card.value === 12) return "Q";
-    else if (card.value === 13) return "K";
+    if (value <= 10) return value;
+    if (value === 11) return "J";
+    else if (value === 12) return "Q";
+    else if (value === 13) return "K";
     else return "A";
   })();
 
@@ -30,7 +26,7 @@ const Card = ({ card }: CardProps) => {
       <div className="relative flex h-full w-full items-center justify-center">
         <div
           className={`absolute left-0 top-0 flex flex-col items-center justify-center font-bold ${
-            card.type === "hearts" || card.type === "diamonds"
+            type === "hearts" || type === "diamonds"
               ? "text-red-500"
               : "text-black"
           }`}
@@ -41,7 +37,7 @@ const Card = ({ card }: CardProps) => {
         <div>
           <Icon
             className={`text-9xl ${
-              card.type === "hearts" || card.type === "diamonds"
+              type === "hearts" || type === "diamonds"
                 ? "text-red-500"
                 : "text-black"
             }`}
@@ -49,7 +45,7 @@ const Card = ({ card }: CardProps) => {
         </div>
         <div
           className={`absolute bottom-0 right-0 flex rotate-180 flex-col items-center justify-center font-bold ${
-            card.type === "hearts" || card.type === "diamonds"
+            type === "hearts" || type === "diamonds"
               ? "text-red-500"
               : "text-black"
           }`}

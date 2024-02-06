@@ -25,7 +25,7 @@ const CardContainer = ({ cards }: CardContainerProps) => {
           }}
           key={index}
         >
-          <CardComponent card={card} />
+          <CardComponent value={card.value} type={card.type} />
         </div>
       ))}
     </div>
