@@ -4,9 +4,11 @@ import {
   ImDiamonds as Diamonds,
   ImSpades as Spades
 } from "react-icons/im";
-import { Card as CardProps } from "../types";
+import { Card as CardType } from "../types";
 
-const Card = ({ value, type }: CardProps) => {
+type CardProps = CardType & { flipped?: boolean };
+
+const Card = ({ value, type, flipped }: CardProps) => {
   const Icon = (() => {
     if (type === "clubs") return Clubs;
     else if (type === "diamonds") return Diamonds;
@@ -21,8 +23,15 @@ const Card = ({ value, type }: CardProps) => {
     else return "A";
   })();
 
+  if (flipped)
+    return (
+      <div className="flex aspect-2/3 w-44 select-none items-center justify-center rounded border-8 border-red-400 bg-white p-2 text-xl shadow-2xl">
+        <Hearts className="text-9xl text-red-600" />
+      </div>
+    );
+
   return (
-    <div className="aspect-2/3 w-44 rounded bg-white p-2 text-xl shadow-2xl">
+    <div className="aspect-2/3 w-44 select-none rounded bg-white p-2 text-xl shadow-2xl">
       <div className="relative flex h-full w-full items-center justify-center">
         <div
           className={`absolute left-0 top-0 flex flex-col items-center justify-center font-bold ${
