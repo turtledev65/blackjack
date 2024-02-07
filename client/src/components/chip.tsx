@@ -41,7 +41,7 @@ const Chip = ({ value }: ChipProps) => {
 
   return (
     <div
-      className={`inline-block rounded-full border-8 border-dashed border-gray-100 p-2 text-white shadow-2xl ${getBgColor()}`}
+      className={`inline-block select-none rounded-full border-8 border-dashed border-gray-100 p-2 text-white shadow-2xl ${getBgColor()}`}
     >
       <div
         className={`flex aspect-square w-20 items-center justify-center rounded-full p-4 text-4xl font-bold ${getPrimaryColor()}`}
