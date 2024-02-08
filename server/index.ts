@@ -219,6 +219,8 @@ io.on("connection", (socket) => {
         io.emit("pick-bet");
         return;
       }
+      const newPlayer = game.players[game.currPlayerIndex];
+      io.to(newPlayer.id).emit("pick-action");
     });
 
     if (card) io.to(socket.id).emit("receive-cards", [card]);
@@ -241,7 +243,10 @@ io.on("connection", (socket) => {
       if (game.currPlayerIndex >= game.players.length) {
         game.currPlayerIndex = 0;
         io.emit("pick-bet");
+        return;
       }
+      const newPlayer = game.players[game.currPlayerIndex];
+      io.to(newPlayer.id).emit("pick-action");
     });
   });
 
