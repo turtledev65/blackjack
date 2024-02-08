@@ -201,6 +201,12 @@ io.on("connection", (socket) => {
     let score = 0;
     let card = null;
     await updatePlayer(gameId, socket.id, (player, game) => {
+      const currPlayer = game.players[game.currPlayerIndex];
+      if (currPlayer.id !== player.id) {
+        socket.emit("error", "It's not your turn");
+        return;
+      }
+
       card = game.deck.pop();
       if (!card) return;
       player.cards.push(card);
@@ -208,7 +214,7 @@ io.on("connection", (socket) => {
       score = player.cards.reduce((acc, card) => acc + card.value, 0);
     });
 
-    io.to(socket.id).emit("receive-cards", [card]);
+    if (card) io.to(socket.id).emit("receive-cards", [card]);
     if (score > 21) io.to(socket.id).emit("lost", score);
     else if (score === 21) io.to(socket.id).emit("won");
   });
