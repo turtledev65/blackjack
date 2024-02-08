@@ -19,6 +19,7 @@ type Game = {
   deck: Card[];
   dealerCards: Card[];
   players: Player[];
+  currPlayerIndex: number;
 };
 
 function getGameId(socket: Socket) {
@@ -184,6 +185,11 @@ io.on("connection", (socket) => {
           io.except(player.id).emit("receive-updated-player", player);
         });
         io.emit("receive-dealer-card", game.deck.pop());
+
+        game.currPlayerIndex = 0;
+
+        const currPlayer = game.players[game.currPlayerIndex];
+        io.to(currPlayer.id).emit("pick-action");
       }
     });
   });
