@@ -212,6 +212,13 @@ io.on("connection", (socket) => {
       player.cards.push(card);
 
       score = player.cards.reduce((acc, card) => acc + card.value, 0);
+
+      game.currPlayerIndex++;
+      if (game.currPlayerIndex >= game.players.length) {
+        game.currPlayerIndex = 0;
+        io.emit("pick-bet");
+        return;
+      }
     });
 
     if (card) io.to(socket.id).emit("receive-cards", [card]);
