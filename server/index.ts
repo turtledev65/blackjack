@@ -219,6 +219,25 @@ io.on("connection", (socket) => {
     else if (score === 21) io.to(socket.id).emit("won");
   });
 
+  socket.on("stand", async () => {
+    const gameId = getGameId(socket);
+    if (!gameId) return;
+
+    await updatePlayer(gameId, socket.id, (player, game) => {
+      const currPlayer = game.players[game.currPlayerIndex];
+      if (currPlayer.id !== player.id) {
+        socket.emit("error", "It's not your turn");
+        return;
+      }
+
+      game.currPlayerIndex++;
+      if (game.currPlayerIndex >= game.players.length) {
+        game.currPlayerIndex = 0;
+        io.emit("pick-bet");
+      }
+    });
+  });
+
   socket.on("disconnecting", async () => {
     console.log(socket.id, "disconnected");
     const gameId = getGameId(socket);
