@@ -1,9 +1,9 @@
 import { useCallback } from "react";
+import { BetValue } from "../types";
 
 type ChipProps = {
-  value: 1 | 5 | 25 | 50 | 100 | 500;
+  value: BetValue;
 };
-
 const Chip = ({ value }: ChipProps) => {
   const getPrimaryColor = useCallback(() => {
     switch (value) {
