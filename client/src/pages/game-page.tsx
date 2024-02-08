@@ -3,11 +3,14 @@ import socket from "../utils/socket";
 import CardContainer from "../components/card-container";
 import { Card, Player as PlayerType } from "../types";
 import Score from "../components/score";
+import { PiHandPalm as Palm } from "react-icons/pi";
+import { LiaPlusSolid as Plus } from "react-icons/lia";
 
 const GamePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
-
   const [otherPlayers, setOtherPlayers] = useState<PlayerType[]>([]);
+
+  const [shouldPickAction, setShouldPickAction] = useState(true);
 
   useEffect(() => {
     socket.emit("get-other-players", (players: PlayerType[]) => {
@@ -66,6 +69,18 @@ const GamePage = () => {
           </div>
         </div>
       </div>
+      {shouldPickAction && (
+        <div className="absolute bottom-2 right-4 flex flex-col justify-end gap-6">
+          <button className="flex items-center justify-center gap-1 rounded bg-gradient-to-b from-green-500 to-green-700 p-4 text-2xl font-bold text-white shadow-md hover:from-green-600 hover:to-green-700">
+            <Plus className="text-5xl" />
+            Hit
+          </button>
+          <button className="flex items-center gap-1 rounded bg-gradient-to-b from-blue-500 to-blue-800 p-4 text-2xl font-bold text-white shadow-md hover:from-blue-600 hover:to-blue-800">
+            <Palm className="text-5xl" />
+            Stand
+          </button>
+        </div>
+      )}
     </>
   );
 };
