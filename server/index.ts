@@ -211,7 +211,10 @@ io.on("connection", (socket) => {
       if (!card) return;
       player.cards.push(card);
 
-      score = player.cards.reduce((acc, card) => acc + card.value, 0);
+      score = player.cards.reduce(
+        (acc, card) => acc + Math.min(card.value, 10),
+        0,
+      );
 
       game.currPlayerIndex++;
       if (game.currPlayerIndex >= game.players.length) {
