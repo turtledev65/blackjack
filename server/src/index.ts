@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import redis from "./redis.js";
+import redis from "./utils/redis.js";
 
 const SUITS = ["clubs", "spades", "diamonds", "hearts"] as const;
 type Suit = typeof SUITS;
