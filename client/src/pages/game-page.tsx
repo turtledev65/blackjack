@@ -5,14 +5,29 @@ import { Card, Player as PlayerType } from "../types";
 import Score from "../components/score";
 import { PiHandPalm as Palm } from "react-icons/pi";
 import { LiaPlusSolid as Plus } from "react-icons/lia";
+import BetPannel from "../components/bet-pannel";
+
+type GameState = "pick-bet" | "pick-action" | "idle";
 
 const GamePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [otherPlayers, setOtherPlayers] = useState<PlayerType[]>([]);
 
-  const [shouldPickAction, setShouldPickAction] = useState(true);
+  const [gameState, setGameState] = useState<GameState>("idle");
 
   useEffect(() => {
+    socket.on("pick-bet", () => {
+      setGameState("pick-bet");
+    });
+
+    socket.on("pick-action", () => {
+      setGameState("pick-action");
+    });
+
+    socket.on("end-turn", () => {
+      setGameState("idle");
+    });
+
     socket.emit("get-other-players", (players: PlayerType[]) => {
       setOtherPlayers(players);
     });
@@ -45,6 +60,8 @@ const GamePage = () => {
       socket.off("receive-cards");
       socket.off("receive-new-player");
       socket.off("receive-updated-player");
+      socket.off("pick-action");
+      socket.off("end-turn");
     };
   }, []);
 
@@ -64,23 +81,35 @@ const GamePage = () => {
             </div>
           ))}
           <div className="order-l mx-10 flex flex-col items-center gap-4">
+            <Score cards={cards} />
             <CardContainer cards={cards} />
             <BetForm minAmmount={10} maxAmmount={1000} />
           </div>
         </div>
       </div>
-      {shouldPickAction && (
+      {gameState === "pick-action" ? (
         <div className="absolute bottom-2 right-4 flex flex-col justify-end gap-6">
-          <button className="flex items-center justify-center gap-1 rounded bg-gradient-to-b from-green-500 to-green-700 p-4 text-2xl font-bold text-white shadow-md hover:from-green-600 hover:to-green-700">
+          <button
+            onClick={() => socket.emit("hit")}
+            className="flex items-center justify-center gap-1 rounded bg-gradient-to-b from-green-500 to-green-700 p-4 text-2xl font-bold text-white shadow-md hover:from-green-600 hover:to-green-700"
+          >
             <Plus className="text-5xl" />
             Hit
           </button>
-          <button className="flex items-center gap-1 rounded bg-gradient-to-b from-blue-500 to-blue-800 p-4 text-2xl font-bold text-white shadow-md hover:from-blue-600 hover:to-blue-800">
+          <button
+            onClick={() => socket.emit("stand")}
+            className="flex items-center gap-1 rounded bg-gradient-to-b from-blue-500 to-blue-800 p-4 text-2xl font-bold text-white shadow-md hover:from-blue-600 hover:to-blue-800"
+          >
             <Palm className="text-5xl" />
             Stand
           </button>
         </div>
-      )}
+      ) : gameState === "pick-bet" ? (
+        <BetPannel
+          balance={100}
+          onAddChip={value => console.log("add chip", value)}
+        />
+      ) : null}
     </>
   );
 };
