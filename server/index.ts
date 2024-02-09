@@ -216,6 +216,8 @@ io.on("connection", (socket) => {
         0,
       );
 
+      socket.broadcast.emit("receive-updated-player", player);
+
       if (score < 21) {
         socket.emit("pick-action");
         return;
