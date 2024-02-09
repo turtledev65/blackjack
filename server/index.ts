@@ -216,9 +216,15 @@ io.on("connection", (socket) => {
         0,
       );
 
+      if (score < 21) {
+        socket.emit("pick-action");
+        return;
+      }
+
       game.currPlayerIndex++;
       if (game.currPlayerIndex >= game.players.length) {
         game.currPlayerIndex = 0;
+
         io.emit("pick-bet");
         return;
       }
