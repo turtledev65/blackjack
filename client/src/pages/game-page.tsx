@@ -81,7 +81,7 @@ const GamePage = () => {
             </div>
           ))}
           <div className="order-l mx-10 flex flex-col items-center gap-4">
-            <Score cards={cards} />
+            {cards.length > 0 && <Score cards={cards} />}
             <CardContainer cards={cards} />
             <BetForm minAmmount={10} maxAmmount={1000} />
           </div>
