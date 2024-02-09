@@ -228,6 +228,7 @@ io.on("connection", (socket) => {
         io.emit("pick-bet");
         return;
       }
+      socket.emit("end-turn");
       const newPlayer = game.players[game.currPlayerIndex];
       io.to(newPlayer.id).emit("pick-action");
     });
@@ -256,6 +257,8 @@ io.on("connection", (socket) => {
       }
       const newPlayer = game.players[game.currPlayerIndex];
       io.to(newPlayer.id).emit("pick-action");
+
+      socket.emit("end-turn");
     });
   });
 
