@@ -1,4 +1,4 @@
-import { Card } from "./types.js";
+import { Card } from "../types.js";
 
 export default class Player {
   cards: Card[];
