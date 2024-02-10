@@ -1,7 +1,7 @@
 import Deck from "./deck.js";
 import Player from "./player.js";
 
-export default class Game {
+export default class Table {
   deck: Deck;
   private players: Player[] = [];
 
