@@ -84,7 +84,7 @@ function generateDeck() {
 
   const out = new Array(DECK_LENGTH).fill(undefined).map((_, index) => ({
     value: (index % CARDS_PER_SUIT) + 1, // make the value wrap between 1 and 13 based on the index
-    type: SUITS[index % SUITS.length], // set the type based on the current index
+    suit: SUITS[index % SUITS.length], // set the suit based on the current index
   }));
 
   // shuffle the deck
