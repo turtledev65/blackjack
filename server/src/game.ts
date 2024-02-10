@@ -1,3 +1,19 @@
+import Player from "./player.js";
+import { Card } from "./types.js";
+
+export default class Game {
+  deck: Deck;
+  private players: Player[] = [];
+
+  constructor() {
+    this.deck = new Deck();
+  }
+
+  addPlayer(newPlayer: Player) {
+    this.players.push(newPlayer);
+  }
+}
+
 class Deck {
   static readonly SUITS = ["clubs", "spades", "diamonds", "hearts"];
   static readonly DECK_LENGTH = 52;
