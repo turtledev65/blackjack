@@ -1,7 +1,7 @@
 import Deck from "./deck.js";
 import Player from "./player.js";
 
-export default class Table {
+export default class Room {
   name: string;
   deck: Deck;
 
