@@ -1,5 +1,5 @@
-import { Card } from "../types.js";
-import Hand from "./hand.js";
+import { Card } from "../types";
+import Hand from "./hand";
 
 export default class Dealer {
   hand = new Hand();

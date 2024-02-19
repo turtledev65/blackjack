@@ -1,8 +1,8 @@
 import { Socket } from "socket.io";
-import Deck from "./deck.js";
-import getSocketName from "../utils/socket.js";
-import Dealer from "./dealer.js";
-import Player from "./player.js";
+import Deck from "./deck";
+import Dealer from "./dealer";
+import Player from "./player";
+import { getSocketName } from "../../utils/socket";
 
 type RoomOptions = Readonly<{
   maxPlayers: number;
@@ -29,7 +29,7 @@ export default class Room {
     initialBalance: 1000,
     minBet: 10,
     maxBet: 500,
-    decks: 3,
+    decks: 3
   };
 
   constructor(name: string, options?: RoomOptions) {
@@ -80,7 +80,7 @@ export default class Room {
             break;
         }
 
-        player.hands.forEach((hand) => {
+        player.hands.forEach(hand => {
           if (hand.score > 21) return;
           if (hand.score === dealerScore) player.ballance += player.bet;
           else if (hand.score > dealerScore || dealerScore > 21)
@@ -107,7 +107,7 @@ export default class Room {
       throw new RangeError(`Room ${name} is full`);
     if (this.players.has(name))
       throw new Error(
-        `Room ${this.name} already has a player with the name ${name}`,
+        `Room ${this.name} already has a player with the name ${name}`
       );
 
     const player = new Player(name, this.options.initialBalance);
@@ -149,7 +149,7 @@ export default class Room {
     if (this.gameOn) throw new Error("Game has already started");
     if (player.ballance < value)
       throw new RangeError(
-        `Insufficent funds to place a bet of: ${value}. (Balance: ${player.ballance})`,
+        `Insufficent funds to place a bet of: ${value}. (Balance: ${player.ballance})`
       );
     if (player.bet !== 0) throw new Error(`You have already placed a bet`);
 
@@ -188,7 +188,7 @@ export default class Room {
     this.validateCurrentPlayer(socket);
     if (this.dealer.faceupCard().value !== "A")
       throw new Error(
-        "You can't place inssurance. Dealer doesen't have an Ace",
+        "You can't place inssurance. Dealer doesen't have an Ace"
       );
 
     this.currPlayer.playStrategy("insurance");
@@ -206,9 +206,7 @@ export default class Room {
     this.validateCurrentPlayer(socket);
     this.currPlayer.playStrategy("split-pairs");
 
-    this.currPlayer.hands.forEach((hand) =>
-      hand.addCards(...this.drawCards(1)),
-    );
+    this.currPlayer.hands.forEach(hand => hand.addCards(...this.drawCards(1)));
   }
 
   drawCards(ammount: number) {
@@ -227,7 +225,7 @@ export default class Room {
   }
 
   private validateCurrentPlayer(
-    socket: Socket,
+    socket: Socket
   ): asserts this is { currPlayer: Player } {
     const name = getSocketName(socket);
     if (!this.gameOn) throw new Error("Game has not started");

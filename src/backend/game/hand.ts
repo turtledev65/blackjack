@@ -1,4 +1,4 @@
-import { Card } from "../types.js";
+import { Card } from "../types";
 
 export default class Hand {
   private _cards: Card[] = [];
@@ -38,7 +38,7 @@ export default class Hand {
       throw new Error("You can't split if you don't have 2 cards");
     if (this._cards[0].value !== this._cards[1].value)
       throw new Error(
-        "You can't split if you don't have cards with different values",
+        "You can't split if you don't have cards with different values"
       );
 
     return [new Hand(this._cards[0]), new Hand(this._cards[1])];

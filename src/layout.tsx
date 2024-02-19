@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
-import socket from "./utils/socket";
+import { socket } from "./utils/socket";
 
 const Layout = () => {
   useEffect(() => {

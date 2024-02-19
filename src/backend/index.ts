@@ -1,17 +1,19 @@
 import { Server } from "socket.io";
-import Room from "./game/room.js";
+import Room from "./game/room";
 
 const io = new Server(3000, {
   cors: {
-    origin: "*",
-  },
+    origin: "*"
+  }
 });
 
+console.log("backend started");
+
 const rooms = new Map<string, Room>();
-io.on("connection", (socket) => {
+io.on("connection", socket => {
   let currentRoom: Room | null;
 
-  socket.on("create-room", (name) => {
+  socket.on("create-room", name => {
     if (rooms.has(name)) {
       socket.emit("err", `Room ${name} already exists`);
       return;
@@ -23,7 +25,7 @@ io.on("connection", (socket) => {
     currentRoom.addPlayer(socket);
   });
 
-  socket.on("join-room", (name) => {
+  socket.on("join-room", name => {
     const room = rooms.get(name);
     if (!room) {
       socket.emit("err", `Room ${name} doesen't exist`);
@@ -38,7 +40,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("bet", (value) => {
+  socket.on("bet", value => {
     if (!currentRoom) {
       socket.emit("err", "You have not joined a room yet");
       return;

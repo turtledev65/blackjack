@@ -1,13 +1,18 @@
 {
-  "name": "Blackjack Game Frontend",
+  "name": "Blackjack",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev:frontend": "vite",
+    "dev:backend": "nodemon --inspect -I --exec node --experimental-specifier-resolution=node --loader ts-node/esm src/backend/index.ts",
+    "dev": "concurrently 'npm:dev:frontend' 'npm:dev:backend'",
+    "build:frontend": "tsc && vite build",
+    "build:backend": "tsc src/backend/*.ts --outDir dist/ --downlevelIteration",
+    "build": "concurrently 'npm:build:frontend' 'npm:build:backend'",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview:frontend": "vite preview",
+    "preview:backend": "node dist/backend/"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -15,6 +20,7 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.0.1",
     "react-router-dom": "^6.21.3",
+    "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4"
   },
   "devDependencies": {
@@ -24,12 +30,15 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "nodemon": "^3.0.3",
     "postcss": "^8.4.33",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^5.0.12"
   }

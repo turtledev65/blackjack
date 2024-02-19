@@ -30,7 +30,7 @@ const CardContainer = ({ cards, flippedCards = 0 }: CardContainerProps) => {
         ) : (
           <CardComponent
             value={cards[index - flippedCards].value}
-            type={cards[index - flippedCards].type}
+            suit={cards[index - flippedCards].suit}
           />
         )}
       </div>

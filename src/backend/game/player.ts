@@ -1,6 +1,6 @@
-import { Strategy } from "../types.js";
-import LinkedList from "../utils/linked-list.js";
-import Hand from "./hand.js";
+import LinkedList from "../../utils/linked-list";
+import { Strategy } from "../types";
+import Hand from "./hand";
 
 export default class Player {
   name: string;
@@ -20,30 +20,32 @@ export default class Player {
 
   playStrategy(strategy: Strategy) {
     switch (strategy) {
-      case "double-down":
+      case "double-down": {
         if (this.currHand.cards.length != 2)
           throw new Error(
-            `You can't double down if you have more than 2 cards`,
+            `You can't double down if you have more than 2 cards`
           );
         if (this.bet * 2 > this.ballance)
           throw new Error(
-            `Insufficient funds to place a bet of $${this.bet * 2}.`,
+            `Insufficient funds to place a bet of $${this.bet * 2}.`
           );
 
         this.ballance -= this.bet;
         this.bet *= 2;
         break;
-      case "insurance":
+      }
+      case "insurance": {
         if (this.bet * 1.5 > this.ballance)
           throw new Error(
-            `Insufficient funds to place a bet of ${this.bet * 1.5}`,
+            `Insufficient funds to place a bet of ${this.bet * 1.5}`
           );
 
         const insuraceBet = this.bet / 2;
         this.ballance -= insuraceBet;
         this.bet += insuraceBet;
         break;
-      case "surrender":
+      }
+      case "surrender": {
         if (this.currHand.cards.length > 2)
           throw new Error("You can't surrender if you have more than 2 cards");
 
@@ -51,10 +53,11 @@ export default class Player {
         this.ballance += this.bet;
 
         break;
-      case "split-pairs":
+      }
+      case "split-pairs": {
         if (this.bet * 2 > this.ballance)
           throw new Error(
-            `Insufficient funds to place a bet of ${this.bet * 2}`,
+            `Insufficient funds to place a bet of ${this.bet * 2}`
           );
 
         this.ballance -= this.bet;
@@ -63,6 +66,7 @@ export default class Player {
         this.currHandNode = this._hands.first;
         this.currHand = this.currHandNode!.value;
         break;
+      }
     }
     this._strategy = strategy;
   }

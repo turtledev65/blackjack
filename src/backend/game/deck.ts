@@ -1,4 +1,4 @@
-import { Card } from "../types.js";
+import { Card } from "../types";
 
 const INITIAL_LENGTH = 52;
 const SUITS = ["clubs", "spades", "diamonds", "hearts"] as const;
@@ -11,7 +11,7 @@ export default class Deck {
     this.cards = new Array(INITIAL_LENGTH).fill(null).map((_, index) => {
       return {
         value: CARD_VALUES[index % CARD_VALUES.length],
-        suit: SUITS[index % SUITS.length],
+        suit: SUITS[index % SUITS.length]
       };
     }) as Card[];
     this.shuffle();

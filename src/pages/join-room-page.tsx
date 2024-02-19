@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import socket from "../utils/socket";
+import { socket } from "../utils/socket";
 import { useNavigate } from "react-router-dom";
 
 const JoinRoomPage = () => {

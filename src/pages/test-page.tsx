@@ -7,14 +7,14 @@ import { Card as CardType } from "../types";
 
 const TestPage = () => {
   const cards = [
-    { value: 1, type: "hearts" },
-    { value: 10, type: "hearts" },
-    { value: 10, type: "hearts" }
+    { value: 1, suit: "hearts" },
+    { value: 10, suit: "hearts" },
+    { value: 10, suit: "hearts" }
   ] as CardType[];
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-2">
-      <Score cards={cards} />
+      <Score score={10} />
       <CardContainer cards={cards} />
       <Card flipped />
       <Chip value={500} />
