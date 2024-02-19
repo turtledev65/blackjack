@@ -12,7 +12,7 @@ const CreateRoomPage = () => {
     if (gameName) {
       const res = await socket.emitWithAck("create-room", gameName);
       if (res.err) console.log(res.err);
-      else navigate(res.value);
+      else navigate(`/room/${res.value}`);
     }
   };
 

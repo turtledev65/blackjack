@@ -12,7 +12,7 @@ const JoinRoomPage = () => {
     if (gameName) {
       const res = await socket.emitWithAck("join-room", gameName);
       if (res.err) console.error(res.err);
-      else navigate(res.value);
+      else navigate(`/room/${res.value}`);
     }
   };
 
