@@ -24,3 +24,8 @@ export type Strategy =
   | "split-pairs"
   | "surrender"
   | null;
+
+export type ApiResponse<T> = {
+  value: T;
+  err: string | null;
+};
