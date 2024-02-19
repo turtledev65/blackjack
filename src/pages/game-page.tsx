@@ -21,7 +21,7 @@ const GamePage = () => {
       <div className="absolute bottom-5 left-0 right-0 flex justify-center">
         <div className="flex items-center gap-5">
           <div className="order-l mx-10 flex flex-col items-center gap-4">
-            {cards.length > 0 && <Score score={10} />}
+            {cards.length > 0 && <Score value={10} />}
             <CardContainer cards={cards} />
             <BetForm minAmmount={10} maxAmmount={1000} />
           </div>
@@ -68,8 +68,7 @@ const Dealer = () => {
   }, []);
 
   if (cards.length === 0) return null;
-  else if (cards.length === 1)
-    return <CardContainer cards={cards} flippedCards={1} />;
+  else if (cards.length === 1) return <CardContainer cards={cards} />;
 
   return <CardContainer cards={cards} />;
 };
