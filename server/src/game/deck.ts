@@ -1,24 +1,27 @@
 import { Card } from "../types.js";
 
-export default class Deck {
-  static readonly SUITS = ["clubs", "spades", "diamonds", "hearts"];
-  static readonly DECK_LENGTH = 52;
-  static readonly CARDS_PER_SUIT = 13;
+const INITIAL_LENGTH = 52;
+const SUITS = ["clubs", "spades", "diamonds", "hearts"] as const;
+const CARD_VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"] as const;
 
+export default class Deck {
   private cards: Card[];
 
   constructor() {
-    this.cards = new Array(Deck.DECK_LENGTH)
-      .fill(undefined)
-      .map((_, index) => ({
-        value: (index % Deck.CARDS_PER_SUIT) + 1,
-        suit: Deck.SUITS[index % Deck.SUITS.length],
-      })) as Card[];
+    this.cards = new Array(INITIAL_LENGTH).fill(null).map((_, index) => {
+      return {
+        value: CARD_VALUES[index % CARD_VALUES.length],
+        suit: SUITS[index % SUITS.length],
+      };
+    }) as Card[];
+    this.shuffle();
   }
 
   draw(cards: number) {
-    const out = this.cards.splice(-cards, cards);
-    if (out.length === 0) return undefined;
-    return out;
+    return this.cards.splice(-cards, cards);
+  }
+
+  shuffle() {
+    this.cards.sort(() => Math.random() - 0.5);
   }
 }
