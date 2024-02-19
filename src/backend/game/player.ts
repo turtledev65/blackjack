@@ -1,5 +1,5 @@
+import { Strategy } from "../../types";
 import LinkedList from "../../utils/linked-list";
-import { Strategy } from "../types";
 import Hand from "./hand";
 
 export default class Player {

@@ -1,4 +1,4 @@
-import { Card } from "../types";
+import { Card } from "../../types";
 
 const INITIAL_LENGTH = 52;
 const SUITS = ["clubs", "spades", "diamonds", "hearts"] as const;

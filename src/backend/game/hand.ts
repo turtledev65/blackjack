@@ -1,4 +1,4 @@
-import { Card } from "../types";
+import { Card } from "../../types";
 
 export default class Hand {
   private _cards: Card[] = [];

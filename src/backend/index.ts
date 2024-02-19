@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import Room from "./game/room";
-import { ApiResponse } from "./types";
+import { ApiResponse } from "../types";
 
 const io = new Server(3000, {
   cors: {

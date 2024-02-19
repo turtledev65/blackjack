@@ -1,4 +1,4 @@
-import { Card } from "../types";
+import { Card } from "../../types";
 import Hand from "./hand";
 
 export default class Dealer {
