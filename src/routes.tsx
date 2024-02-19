@@ -12,13 +12,11 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "create-room", element: <CreateRoomPage /> },
+      { path: "join-room", element: <JoinRoomPage /> },
       {
         path: "room",
-        children: [
-          { path: "create", element: <CreateRoomPage /> },
-          { path: "join", element: <JoinRoomPage /> },
-          { path: ":name", element: <GamePage /> }
-        ]
+        children: [{ path: ":name", element: <GamePage /> }]
       },
       { path: "test", element: <TestPage /> }
     ]
