@@ -1,17 +1,24 @@
 import { useRef } from "react";
 import { socket } from "../utils/socket";
 import { useNavigate } from "react-router-dom";
+import usePlayers from "../hooks/usePlayers";
 
 const JoinRoomPage = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
+  const { setPlayers } = usePlayers();
+
   const handleJoinRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const roomName = nameRef.current?.value?.trim();
     if (roomName) {
-      const name = await socket.emitWithAck("join-room", roomName);
-      if (name) navigate(`/room/${name}`);
+      const res = await socket.emitWithAck("join-room", roomName);
+      if (res) {
+        console.log("response", res);
+        setPlayers(res);
+        navigate(`/room/${roomName}`);
+      }
     }
   };
 

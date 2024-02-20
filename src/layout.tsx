@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 import { socket } from "./utils/socket";
+import { PlayersProvider } from "./providers/players";
 
 const Layout = () => {
   useEffect(() => {
@@ -36,7 +37,9 @@ const Layout = () => {
 
   return (
     <>
-      <Outlet />
+      <PlayersProvider>
+        <Outlet />
+      </PlayersProvider>
       <Toaster />
     </>
   );

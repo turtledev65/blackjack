@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
-import { socket } from "../utils/socket";
-import Player from "../backend/game/player";
+import { useContext } from "react";
+import { PlayersContext, PlayersContextType } from "../providers/players";
 
 const GamePage = () => {
-  const [players, setPlayers] = useState<Player[]>([]);
+  const { players } = useContext(PlayersContext) as PlayersContextType;
+  console.log(players);
 
   return (
     <>
-      {players.map(player => (
-        <div>{player.name}</div>
-      ))}
+      <p>hello </p>
     </>
   );
 };

@@ -10,8 +10,8 @@ const CreateRoomPage = () => {
     e.preventDefault();
     const roomName = nameRef.current?.value?.trim();
     if (roomName) {
-      const name = await socket.emitWithAck("create-room", roomName);
-      if (name) navigate(`/room/${name}`);
+      const res = await socket.emitWithAck("create-room", roomName);
+      if (res) navigate(`/room/${roomName}`);
     }
   };
 
