@@ -84,6 +84,10 @@ io.on("connection", socket => {
           "receive-dealer",
           currentRoom.toSimplifiedObject().dealer
         );
+        io.to(currentRoom.name).emit(
+          "update-players",
+          currentRoom.toSimplifiedObject().players
+        );
       }
     } catch (err) {
       handleError(err);
