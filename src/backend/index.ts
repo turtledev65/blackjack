@@ -39,7 +39,7 @@ io.on("connection", socket => {
     currentRoom.addPlayer(socket);
     socket.join(currentRoom.name);
 
-    cb(currentRoom.name);
+    cb(Array.from(currentRoom.players.values()));
   });
 
   socket.on("join-room", (name, cb) => {
@@ -52,7 +52,7 @@ io.on("connection", socket => {
     try {
       room.addPlayer(socket);
       currentRoom = room;
-      cb(name);
+      cb(Array.from(currentRoom.players.values()));
     } catch (err) {
       handleError(err);
     }
@@ -161,5 +161,10 @@ io.on("connection", socket => {
     } catch (err) {
       handleError(err);
     }
+  });
+
+  socket.onAny(() => {
+    console.log("All Rooms", rooms);
+    console.log("Current Room", currentRoom);
   });
 });
