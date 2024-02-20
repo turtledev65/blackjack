@@ -1,15 +1,11 @@
 import { Card, IPlayer } from "../types";
 import CardContainer from "../components/card-container";
 import usePlayers from "../hooks/usePlayers";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { socket } from "../utils/socket";
 
 const GamePage = () => {
   const { players, setPlayers } = usePlayers();
-
-  useEffect(() => {
-    console.log(players);
-  }, [players]);
 
   useEffect(() => {
     socket.on("player-joined", (newPlayer: IPlayer) => {
@@ -24,9 +20,7 @@ const GamePage = () => {
   return (
     <>
       <div className="absolute inset-6 flex flex-col justify-between">
-        <div>
-          <Dealer />
-        </div>
+        <Dealer />
         <div className="flex justify-center gap-4">
           {players.map(player => (
             <Player
@@ -44,18 +38,34 @@ const GamePage = () => {
 
 export default GamePage;
 
+type ScoreProps = {
+  value: number;
+};
+const Score = ({ value }: ScoreProps) => {
+  const bgColor = useMemo(() => {
+    if (value === 21) return "bg-blue-500";
+    else if (value > 21) return "bg-red-700";
+    else return "bg-black";
+  }, [value]);
+
+  return (
+    <p
+      className={`rounded ${bgColor} bg-opacity-60 px-4 text-center text-lg font-bold text-white`}
+    >
+      {value}
+    </p>
+  );
+};
+
 type PlayerProps = {
   name: string;
   cards?: Card[];
   score: number;
 };
-
 const Player = ({ name, cards, score }: PlayerProps) => {
   return (
     <div className="flex flex-col items-center gap-2">
-      <p className="rounded bg-black bg-opacity-60 px-4 text-center text-lg font-bold text-white">
-        {score}
-      </p>
+      {score > 0 && <Score value={score} />}
       <CardContainer cards={cards || []} />
       <p className="text-xl text-gray-100">{name}</p>
     </div>
