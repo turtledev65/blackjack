@@ -15,7 +15,6 @@ const JoinRoomPage = () => {
     if (roomName) {
       const res = await socket.emitWithAck("join-room", roomName);
       if (res) {
-        console.log("response", res);
         setPlayers(res);
         navigate(`/room/${roomName}`);
       }
