@@ -1,17 +1,23 @@
 import React, { useRef } from "react";
 import { socket } from "../utils/socket";
 import { useNavigate } from "react-router-dom";
+import usePlayers from "../hooks/usePlayers";
 
 const CreateRoomPage = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  const { setPlayers } = usePlayers();
 
   const handleCreateRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const roomName = nameRef.current?.value?.trim();
     if (roomName) {
       const res = await socket.emitWithAck("create-room", roomName);
-      if (res) navigate(`/room/${roomName}`);
+      if (res) {
+        setPlayers(res);
+        navigate(`/room/${roomName}`);
+      }
     }
   };
 

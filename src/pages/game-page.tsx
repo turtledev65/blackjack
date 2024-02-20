@@ -1,32 +1,48 @@
-import { useContext } from "react";
-import { PlayersContext, PlayersContextType } from "../providers/players";
-import { Card } from "../types";
+import { Card, IPlayer } from "../types";
 import CardContainer from "../components/card-container";
+import usePlayers from "../hooks/usePlayers";
+import { useEffect } from "react";
+import { socket } from "../utils/socket";
 
 const GamePage = () => {
-  const { players } = useContext(PlayersContext) as PlayersContextType;
+  const { players, setPlayers } = usePlayers();
 
-  console.log(players);
-  players.forEach(player => {
-    console.log(player);
-    console.log(player.hand.cards);
-  });
+  useEffect(() => {
+    console.log(players);
+  }, [players]);
+
+  useEffect(() => {
+    socket.on("player-joined", (newPlayer: IPlayer) => {
+      setPlayers(prevPlayers => [...prevPlayers, newPlayer]);
+    });
+
+    return () => {
+      socket.off("player-joined");
+    };
+  }, []);
 
   return (
     <>
-      <div className="flex gap-4">
-        {players.map(player => (
-          <Player
-            key={player.name}
-            name={player.name}
-            cards={player.hand.cards as Card[]}
-            score={player.hand.score}
-          />
-        ))}
+      <div className="absolute inset-6 flex flex-col justify-between">
+        <div>
+          <Dealer />
+        </div>
+        <div className="flex justify-center gap-4">
+          {players.map(player => (
+            <Player
+              key={player.name}
+              name={player.name}
+              cards={player.hand.cards as Card[]}
+              score={player.hand.score}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
 };
+
+export default GamePage;
 
 type PlayerProps = {
   name: string;
@@ -46,4 +62,9 @@ const Player = ({ name, cards, score }: PlayerProps) => {
   );
 };
 
-export default GamePage;
+type DealerProps = {
+  cards?: Card[];
+};
+const Dealer = ({ cards }: DealerProps) => {
+  return <Player cards={cards || []} score={10} name="Dealer" />;
+};

@@ -25,9 +25,19 @@ export type Strategy =
   | "surrender"
   | null;
 
-export type BetValue = 1 | 5 | 25 | 50 | 100 | 500;
+export interface IHand {
+  cards: Card[];
+  score: number;
+}
 
-export type ApiResponse<T> = {
-  value: T;
-  err: string | null;
-};
+export interface IPlayer {
+  name: string;
+  hand: IHand;
+}
+
+export interface IDealer {
+  faceupCard: Card;
+  hand: IHand;
+}
+
+export type BetValue = 1 | 5 | 25 | 50 | 100 | 500;

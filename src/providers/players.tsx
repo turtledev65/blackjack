@@ -5,10 +5,10 @@ import {
   createContext,
   useState
 } from "react";
-import Player from "../backend/game/player";
+import { IPlayer } from "../types";
 
 export const PlayersProvider = ({ children }: PropsWithChildren) => {
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<IPlayer[]>([]);
 
   return (
     <PlayersContext.Provider value={{ players, setPlayers }}>
@@ -18,8 +18,8 @@ export const PlayersProvider = ({ children }: PropsWithChildren) => {
 };
 
 export type PlayersContextType = {
-  players: Player[];
-  setPlayers: Dispatch<SetStateAction<Player[]>>;
+  players: IPlayer[];
+  setPlayers: Dispatch<SetStateAction<IPlayer[]>>;
 };
 
 export const PlayersContext = createContext<PlayersContextType | null>(null);
