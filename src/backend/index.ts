@@ -54,6 +54,7 @@ io.on("connection", socket => {
       currentRoom = room;
 
       cb(currentRoom.toSimplifiedObject().players);
+      socket.join(currentRoom.name);
       socket.broadcast
         .to(room.name)
         .emit("player-joined", player.toSimplifiedObject());
