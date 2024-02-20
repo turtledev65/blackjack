@@ -12,8 +12,13 @@ const GamePage = () => {
       setPlayers(prevPlayers => [...prevPlayers, newPlayer]);
     });
 
+    socket.on("update-players", (newPlayers: IPlayer[]) => {
+      setPlayers(newPlayers);
+    });
+
     return () => {
       socket.off("player-joined");
+      socket.off("update-players");
     };
   }, []);
 
@@ -101,7 +106,8 @@ const Dealer = () => {
 
   useEffect(() => {
     socket.on("receive-dealer", newDealer => {
-      setDealer(newDealer), console.log(newDealer);
+      setDealer(newDealer);
+      console.log(newDealer);
     });
 
     return () => {
