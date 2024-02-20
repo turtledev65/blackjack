@@ -3,6 +3,7 @@ import Deck from "./deck";
 import Dealer from "./dealer";
 import Player from "./player";
 import { getSocketName } from "../../utils/socket";
+import { IPlayer } from "../../types";
 
 type RoomOptions = Readonly<{
   maxPlayers: number;
@@ -221,9 +222,13 @@ export default class Room {
   }
 
   toSimplifiedObject() {
-    const players: unknown[] = [];
+    const players: IPlayer[] = [];
     this.players.forEach(player => players.push(player.toSimplifiedObject()));
-    return { name: this.name, players };
+    return {
+      name: this.name,
+      players,
+      dealer: this.dealer.toSimplifiedObject()
+    };
   }
 
   private generateDecks() {

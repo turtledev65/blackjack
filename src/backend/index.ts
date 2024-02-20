@@ -54,7 +54,9 @@ io.on("connection", socket => {
       currentRoom = room;
 
       cb(currentRoom.toSimplifiedObject().players);
-      socket.broadcast.emit("player-joined", player.toSimplifiedObject());
+      socket.broadcast
+        .to(room.name)
+        .emit("player-joined", player.toSimplifiedObject());
     } catch (err) {
       handleError(err);
     }
@@ -75,6 +77,13 @@ io.on("connection", socket => {
 
     try {
       currentRoom.placeBet(value, socket);
+
+      if (currentRoom.gameOn) {
+        io.to(currentRoom.name).emit(
+          "receive-dealer",
+          currentRoom.toSimplifiedObject().dealer
+        );
+      }
     } catch (err) {
       handleError(err);
     }

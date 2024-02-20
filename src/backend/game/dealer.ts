@@ -5,7 +5,10 @@ export default class Dealer implements IDealer {
   hand = new Hand();
 
   toSimplifiedObject(): IDealer {
-    return { hand: this.hand, faceupCard: this.faceupCard };
+    return {
+      hand: this.hand.toSimplifiedObject(),
+      faceupCard: this.faceupCard
+    };
   }
 
   get faceupCard() {
