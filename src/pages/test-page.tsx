@@ -14,9 +14,9 @@ const TestPage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-2">
-      <Score score={10} />
+      <Score value={21} />
       <CardContainer cards={cards} />
-      <Card flipped />
+      <Card value="J" suit="hearts" />
       <Chip value={500} />
       <BetPannel
         balance={100}

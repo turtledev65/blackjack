@@ -5,7 +5,8 @@ import { socket } from "./utils/socket";
 
 const Layout = () => {
   useEffect(() => {
-    socket.on("error", msg => {
+    socket.on("err", msg => {
+      console.log(msg);
       toast.error(msg, {
         duration: 3000,
         className: "bg-red-500 text-white text-xl font-bold",
@@ -28,7 +29,7 @@ const Layout = () => {
     );
 
     return () => {
-      socket.off("error");
+      socket.off("err");
       socket.off("disconnect");
     };
   });

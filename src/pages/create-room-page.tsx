@@ -8,11 +8,10 @@ const CreateRoomPage = () => {
 
   const handleCreateRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const gameName = nameRef.current?.value?.trim();
-    if (gameName) {
-      const res = await socket.emitWithAck("create-room", gameName);
-      if (res.err) console.log(res.err);
-      else navigate(`/room/${res.value}`);
+    const roomName = nameRef.current?.value?.trim();
+    if (roomName) {
+      const name = await socket.emitWithAck("create-room", roomName);
+      if (name) navigate(`/room/${name}`);
     }
   };
 

@@ -8,11 +8,10 @@ const JoinRoomPage = () => {
 
   const handleJoinRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const gameName = nameRef.current?.value?.trim();
-    if (gameName) {
-      const res = await socket.emitWithAck("join-room", gameName);
-      if (res.err) console.error(res.err);
-      else navigate(`/room/${res.value}`);
+    const roomName = nameRef.current?.value?.trim();
+    if (roomName) {
+      const name = await socket.emitWithAck("join-room", roomName);
+      if (name) navigate(`/room/${name}`);
     }
   };
 
