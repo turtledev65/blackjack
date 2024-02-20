@@ -1,6 +1,6 @@
-import { Card } from "../../types";
+import { Card, IHand } from "../../types";
 
-export default class Hand {
+export default class Hand implements IHand {
   private _cards: Card[] = [];
   private _score = 0;
   private aceValue = 0;
@@ -45,14 +45,18 @@ export default class Hand {
   }
 
   hasNatural() {
-    return this.cards.length === 2 && this.score === 21;
+    return this._cards.length === 2 && this.score === 21;
+  }
+
+  toSimplifiedObject(): IHand {
+    return { cards: this._cards, score: this._score };
   }
 
   get score() {
     return this._score;
   }
 
-  get cards(): readonly Card[] {
-    return this._cards;
+  get cards() {
+    return [...this._cards];
   }
 }

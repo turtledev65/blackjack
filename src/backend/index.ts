@@ -1,11 +1,15 @@
 import { Server } from "socket.io";
 import Room from "./game/room";
+import Hand from "./game/hand";
 
 const io = new Server(3000, {
   cors: {
     origin: "*"
   }
 });
+
+const hand = new Hand();
+console.log(hand.toSimplifiedObject());
 
 const rooms = new Map<string, Room>();
 io.on("connection", socket => {

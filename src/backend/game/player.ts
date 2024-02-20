@@ -1,8 +1,8 @@
-import { Strategy } from "../../types";
+import { IPlayer, Strategy } from "../../types";
 import LinkedList from "../../utils/linked-list";
 import Hand from "./hand";
 
-export default class Player {
+export default class Player implements IPlayer {
   name: string;
   ballance: number;
   bet: number = 0;
@@ -89,10 +89,10 @@ export default class Player {
     this.bet = 0;
   }
 
-  toSimplifiedObject() {
+  toSimplifiedObject(): IPlayer {
     return {
       name: this.name,
-      hand: { cards: this.currHand.cards, score: this.currHand.score }
+      hand: this.currHand.toSimplifiedObject()
     };
   }
 

@@ -1,10 +1,14 @@
-import { Card } from "../../types";
+import { IDealer } from "../../types";
 import Hand from "./hand";
 
-export default class Dealer {
+export default class Dealer implements IDealer {
   hand = new Hand();
 
-  faceupCard(): Readonly<Card> {
+  toSimplifiedObject(): IDealer {
+    return { hand: this.hand, faceupCard: this.faceupCard };
+  }
+
+  get faceupCard() {
     return this.hand.cards[0];
   }
 }

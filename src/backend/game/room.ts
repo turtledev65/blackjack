@@ -186,7 +186,7 @@ export default class Room {
 
   placeInsurance(socket: Socket) {
     this.validateCurrentPlayer(socket);
-    if (this.dealer.faceupCard().value !== "A")
+    if (this.dealer.faceupCard.value !== "A")
       throw new Error(
         "You can't place inssurance. Dealer doesen't have an Ace"
       );
