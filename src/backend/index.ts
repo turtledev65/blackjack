@@ -39,7 +39,7 @@ io.on("connection", socket => {
     currentRoom.addPlayer(socket);
     socket.join(currentRoom.name);
 
-    cb(Array.from(currentRoom.players.values()));
+    cb(currentRoom.toSimplifiedObject().players);
   });
 
   socket.on("join-room", (name, cb) => {
@@ -52,7 +52,8 @@ io.on("connection", socket => {
     try {
       room.addPlayer(socket);
       currentRoom = room;
-      cb(Array.from(currentRoom.players.values()));
+
+      cb(currentRoom.toSimplifiedObject().players);
     } catch (err) {
       handleError(err);
     }

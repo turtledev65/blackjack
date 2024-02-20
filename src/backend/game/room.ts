@@ -220,6 +220,12 @@ export default class Room {
     return cards;
   }
 
+  toSimplifiedObject() {
+    const players: unknown[] = [];
+    this.players.forEach(player => players.push(player.toSimplifiedObject()));
+    return { name: this.name, players };
+  }
+
   private generateDecks() {
     return new Array(this.options.decks).fill(null).map(() => new Deck());
   }

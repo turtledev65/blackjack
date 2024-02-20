@@ -89,6 +89,13 @@ export default class Player {
     this.bet = 0;
   }
 
+  toSimplifiedObject() {
+    return {
+      name: this.name,
+      hand: { cards: this.currHand.cards, score: this.currHand.score }
+    };
+  }
+
   get strategy() {
     return this._strategy;
   }
