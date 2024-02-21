@@ -221,9 +221,13 @@ export default class Room {
     return cards;
   }
 
-  getPossibleActions(playerSocket: Socket) {
-    const player = this.players.get(getSocketName(playerSocket));
-    if (!player) return [];
+  getPossibleActions(player: Socket | Player) {
+    if (player instanceof Socket) {
+      const object = this.players.get(getSocketName(player));
+      if (!object) return [];
+      player = object;
+    }
+    if (!this.players.has(player.name)) return [];
 
     const actions: PlayerAction[] = ["stand", "hit"];
 

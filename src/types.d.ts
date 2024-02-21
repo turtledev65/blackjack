@@ -36,7 +36,7 @@ export interface IPlayer {
   hand: IHand;
 }
 
-export type PlayerAction = NonNullable<Strategy> | "stand" | "hit";
+export type PlayerAction = NonNullable<Strategy> | "stand" | "hit" | "bet";
 
 export interface IDealer {
   faceupCard: Card;

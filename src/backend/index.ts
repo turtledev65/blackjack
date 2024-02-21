@@ -1,11 +1,33 @@
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import Room from "./game/room";
+import { getSocketName } from "../utils/socket";
 
 const io = new Server(3000, {
   cors: {
     origin: "*"
   }
 });
+
+function handlePlayerAction(socket: Socket, currentRoom: Room) {
+  if (!currentRoom) return;
+  io.to(currentRoom.name).emit(
+    "update-players",
+    currentRoom.toSimplifiedObject().players
+  );
+
+  if (currentRoom.currPlayer) {
+    if (currentRoom.currPlayer.name !== getSocketName(socket)) {
+      socket.emit("pick-action", []);
+    }
+
+    io.to(currentRoom.currPlayer.name).emit(
+      "pick-action",
+      currentRoom.getPossibleActions(currentRoom.currPlayer)
+    );
+  } else {
+    socket.emit("pick-action", ["bet"]);
+  }
+}
 
 const rooms = new Map<string, Room>();
 io.on("connection", socket => {
@@ -38,6 +60,7 @@ io.on("connection", socket => {
 
     currentRoom.addPlayer(socket);
     socket.join(currentRoom.name);
+    socket.emit("pick-action", ["bet"]);
 
     cb(currentRoom.toSimplifiedObject().players);
   });
@@ -58,6 +81,8 @@ io.on("connection", socket => {
       socket.broadcast
         .to(room.name)
         .emit("player-joined", player.toSimplifiedObject());
+
+      if (!currentRoom.gameOn) socket.emit("pick-action", ["bet"]);
     } catch (err) {
       handleError(err);
     }
@@ -79,22 +104,21 @@ io.on("connection", socket => {
     try {
       currentRoom.placeBet(value, socket);
 
+      socket.emit("pick-action", []);
       if (currentRoom.gameOn) {
         io.to(currentRoom.name).emit(
           "receive-dealer",
           currentRoom.toSimplifiedObject().dealer
+        );
+        io.to(currentRoom.currPlayer!.name).emit(
+          "pick-action",
+          currentRoom.getPossibleActions(socket)
         );
       }
       io.to(currentRoom.name).emit(
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
-
-      if (currentRoom.currPlayer)
-        io.to(currentRoom.currPlayer.name).emit(
-          "pick-action",
-          currentRoom.getPossibleActions(socket)
-        );
     } catch (err) {
       handleError(err);
     }
@@ -108,16 +132,7 @@ io.on("connection", socket => {
 
     try {
       currentRoom.hitPlayer(socket);
-      io.to(currentRoom.name).emit(
-        "update-players",
-        currentRoom.toSimplifiedObject().players
-      );
-
-      if (currentRoom.currPlayer)
-        io.to(currentRoom.currPlayer.name).emit(
-          "pick-action",
-          currentRoom.getPossibleActions(socket)
-        );
+      handlePlayerAction(socket, currentRoom);
     } catch (err) {
       handleError(err);
     }
@@ -131,16 +146,7 @@ io.on("connection", socket => {
 
     try {
       currentRoom.standPlayer(socket);
-      io.to(currentRoom.name).emit(
-        "update-players",
-        currentRoom.toSimplifiedObject().players
-      );
-
-      if (currentRoom.currPlayer)
-        io.to(currentRoom.currPlayer.name).emit(
-          "pick-action",
-          currentRoom.getPossibleActions(socket)
-        );
+      handlePlayerAction(socket, currentRoom);
     } catch (err) {
       handleError(err);
     }
@@ -154,13 +160,7 @@ io.on("connection", socket => {
 
     try {
       currentRoom.doubleDown(socket);
-      io.to(currentRoom.name).emit(
-        "update-players",
-        currentRoom.toSimplifiedObject().players
-      );
-
-      if (currentRoom.currPlayer)
-        io.to(currentRoom.currPlayer.name).emit("pick-action");
+      handlePlayerAction(socket, currentRoom);
     } catch (err) {
       handleError(err);
     }
@@ -174,13 +174,7 @@ io.on("connection", socket => {
 
     try {
       currentRoom.placeInsurance(socket);
-      io.to(currentRoom.name).emit(
-        "update-players",
-        currentRoom.toSimplifiedObject().players
-      );
-
-      if (currentRoom.currPlayer)
-        io.to(currentRoom.currPlayer.name).emit("pick-action");
+      handlePlayerAction(socket, currentRoom);
     } catch (err) {
       handleError(err);
     }
@@ -194,13 +188,7 @@ io.on("connection", socket => {
 
     try {
       currentRoom.surrender(socket);
-      io.to(currentRoom.name).emit(
-        "update-players",
-        currentRoom.toSimplifiedObject().players
-      );
-
-      if (currentRoom.currPlayer)
-        io.to(currentRoom.currPlayer.name).emit("pick-action");
+      handlePlayerAction(socket, currentRoom);
     } catch (err) {
       handleError(err);
     }
@@ -214,16 +202,7 @@ io.on("connection", socket => {
 
     try {
       currentRoom.splitPairs(socket);
-      io.to(currentRoom.name).emit(
-        "update-players",
-        currentRoom.toSimplifiedObject().players
-      );
-
-      if (currentRoom.currPlayer)
-        io.to(currentRoom.currPlayer.name).emit(
-          "pick-action",
-          currentRoom.getPossibleActions(socket)
-        );
+      handlePlayerAction(socket, currentRoom);
     } catch (err) {
       handleError(err);
     }
