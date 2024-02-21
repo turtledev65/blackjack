@@ -92,6 +92,7 @@ export default class Player implements IPlayer {
   toSimplifiedObject(): IPlayer {
     return {
       name: this.name,
+      ballance: this.ballance,
       hand: this.currHand.toSimplifiedObject()
     };
   }

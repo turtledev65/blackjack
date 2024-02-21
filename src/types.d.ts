@@ -32,6 +32,7 @@ export interface IHand {
 
 export interface IPlayer {
   name: string;
+  ballance: number;
   hand: IHand;
 }
 
