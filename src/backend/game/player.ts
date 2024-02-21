@@ -21,7 +21,7 @@ export default class Player implements IPlayer {
   playStrategy(strategy: Strategy) {
     switch (strategy) {
       case "double-down": {
-        if (this.currHand.cards.length != 2)
+        if (this.currHand.cards.length !== 2)
           throw new Error(
             `You can't double down if you have more than 2 cards`
           );

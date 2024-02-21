@@ -89,6 +89,12 @@ io.on("connection", socket => {
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
+
+      if (currentRoom.currPlayer)
+        io.to(currentRoom.currPlayer.name).emit(
+          "pick-action",
+          currentRoom.getPossibleActions(socket)
+        );
     } catch (err) {
       handleError(err);
     }
@@ -106,6 +112,12 @@ io.on("connection", socket => {
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
+
+      if (currentRoom.currPlayer)
+        io.to(currentRoom.currPlayer.name).emit(
+          "pick-action",
+          currentRoom.getPossibleActions(socket)
+        );
     } catch (err) {
       handleError(err);
     }
@@ -123,6 +135,12 @@ io.on("connection", socket => {
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
+
+      if (currentRoom.currPlayer)
+        io.to(currentRoom.currPlayer.name).emit(
+          "pick-action",
+          currentRoom.getPossibleActions(socket)
+        );
     } catch (err) {
       handleError(err);
     }
@@ -140,6 +158,9 @@ io.on("connection", socket => {
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
+
+      if (currentRoom.currPlayer)
+        io.to(currentRoom.currPlayer.name).emit("pick-action");
     } catch (err) {
       handleError(err);
     }
@@ -157,6 +178,9 @@ io.on("connection", socket => {
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
+
+      if (currentRoom.currPlayer)
+        io.to(currentRoom.currPlayer.name).emit("pick-action");
     } catch (err) {
       handleError(err);
     }
@@ -174,6 +198,9 @@ io.on("connection", socket => {
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
+
+      if (currentRoom.currPlayer)
+        io.to(currentRoom.currPlayer.name).emit("pick-action");
     } catch (err) {
       handleError(err);
     }
@@ -191,6 +218,12 @@ io.on("connection", socket => {
         "update-players",
         currentRoom.toSimplifiedObject().players
       );
+
+      if (currentRoom.currPlayer)
+        io.to(currentRoom.currPlayer.name).emit(
+          "pick-action",
+          currentRoom.getPossibleActions(socket)
+        );
     } catch (err) {
       handleError(err);
     }

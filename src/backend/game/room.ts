@@ -3,7 +3,7 @@ import Deck from "./deck";
 import Dealer from "./dealer";
 import Player from "./player";
 import { getSocketName } from "../../utils/socket";
-import { IPlayer } from "../../types";
+import { IPlayer, PlayerAction } from "../../types";
 
 type RoomOptions = Readonly<{
   maxPlayers: number;
@@ -219,6 +219,25 @@ export default class Room {
       cards.push(...this.currDeck.draw(ammount - cards.length));
     }
     return cards;
+  }
+
+  getPossibleActions(playerSocket: Socket) {
+    const player = this.players.get(getSocketName(playerSocket));
+    if (!player) return [];
+
+    const actions: PlayerAction[] = ["stand", "hit"];
+
+    if (player.hand.score >= 21) return [];
+    else {
+      if (player.hand.cards.length === 2) {
+        actions.push("surrender");
+        if (player.bet * 2 < player.ballance) actions.push("double-down");
+        if (player.hand.cards[0] === player.hand.cards[1])
+          actions.push("split-pairs");
+        if (this.dealer.faceupCard.value === "A") actions.push("insurance");
+      }
+    }
+    return actions;
   }
 
   toSimplifiedObject() {
