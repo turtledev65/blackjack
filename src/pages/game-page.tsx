@@ -1,11 +1,16 @@
-import { Card, IDealer, IPlayer } from "../types";
+import { Card, IDealer, IPlayer, PlayerAction } from "../types";
 import CardContainer from "../components/card-container";
 import usePlayers from "../hooks/usePlayers";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { socket } from "../utils/socket";
+import { PiHandPalmLight } from "react-icons/pi";
+import { getCardValue } from "../utils/card";
 
 const GamePage = () => {
   const { players, setPlayers } = usePlayers();
+  const [possibleActions, setPossibleActions] = useState<Set<PlayerAction>>(
+    new Set()
+  );
 
   useEffect(() => {
     socket.on("player-joined", (newPlayer: IPlayer) => {
@@ -16,67 +21,74 @@ const GamePage = () => {
       setPlayers(newPlayers);
     });
 
+    socket.on("pick-action", (possibleActions: PlayerAction[]) => {
+      console.log("pick action");
+      console.log(possibleActions);
+      setPossibleActions(new Set(possibleActions));
+    });
+
+    socket.on("round-ended", () => {
+      console.log("turn ended");
+      setPossibleActions(new Set());
+    });
+
     return () => {
       socket.off("player-joined");
       socket.off("update-players");
+      socket.off("pick-action");
     };
   }, []);
 
   return (
     <>
-      <div className="absolute inset-6 flex flex-col justify-between">
+      <div className="absolute inset-6 flex flex-col items-center justify-between">
         <Dealer />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ">
+        <BetButton />
+        {possibleActions.has("bet") ? (
           <BetButton />
-          <button
-            className="rounded bg-red-800 px-4 py-1 text-xl text-white"
-            onClick={() => {
-              socket.emit("hit");
-            }}
-          >
-            Hit
-          </button>
-          <button
-            className="rounded bg-blue-800 px-4 py-1 text-xl text-white"
-            onClick={() => {
-              socket.emit("stand");
-            }}
-          >
-            Stand
-          </button>
-          <button
-            className="rounded bg-yellow-400 px-4 py-1 text-xl text-white"
-            onClick={() => {
-              socket.emit("double-down");
-            }}
-          >
-            Double Down
-          </button>
-          <button
-            className="rounded bg-green-500 px-4 py-1 text-xl text-white"
-            onClick={() => {
-              socket.emit("split-pairs");
-            }}
-          >
-            Split Pairs
-          </button>
-          <button
-            className="rounded bg-orange-500 px-4 py-1 text-xl text-white"
-            onClick={() => {
-              socket.emit("split-pairs");
-            }}
-          >
-            Insurance
-          </button>
-          <button
-            className="rounded bg-purple-500 px-4 py-1 text-xl text-white"
-            onClick={() => {
-              socket.emit("insurance");
-            }}
-          >
-            Surrender
-          </button>
-        </div>
+        ) : (
+          possibleActions.size >= 2 && (
+            <div className="flex w-full items-center justify-center gap-20 *:flex-1">
+              <div className="grid place-items-center">
+                {possibleActions.has("insurance") && (
+                  <Button
+                    icon={<PiHandPalmLight />}
+                    label="insurance"
+                    onClick={() => socket.emit("insurance")}
+                  />
+                )}
+                {possibleActions.has("hit") && (
+                  <Button
+                    icon={<PiHandPalmLight />}
+                    label="Hit"
+                    onClick={() => socket.emit("hit")}
+                  />
+                )}
+              </div>
+              {possibleActions.has("double-down") && (
+                <div className="grid place-items-center self-center">
+                  <DoubleDown />
+                </div>
+              )}
+              <div className="flex flex-col justify-center gap-4">
+                {possibleActions.has("surrender") && (
+                  <Button
+                    icon={<PiHandPalmLight />}
+                    label="Surrender"
+                    onClick={() => socket.emit("surrender")}
+                  />
+                )}
+                {possibleActions.has("stand") && (
+                  <Button
+                    icon={<PiHandPalmLight />}
+                    label="Stand"
+                    onClick={() => socket.emit("stand")}
+                  />
+                )}
+              </div>
+            </div>
+          )
+        )}
         <div className="flex justify-center gap-4">
           {players.map(player => (
             <Player
@@ -94,6 +106,38 @@ const GamePage = () => {
 };
 
 export default GamePage;
+
+type ButtonProps = {
+  label: string;
+  icon?: ReactNode;
+  onClick?: () => void;
+};
+const Button = ({ icon, label, onClick }: ButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center justify-center gap-2 rounded bg-gradient-to-b from-green-400 to-green-700  px-4 py-2 text-4xl text-white hover:from-green-600 hover:to-green-700"
+    >
+      {icon}
+      {label}
+    </button>
+  );
+};
+
+const DoubleDown = () => {
+  return (
+    <div
+      onClick={() => {
+        socket.emit("double-down");
+      }}
+      className="shadow-4xl group inline-block cursor-pointer select-none rounded-full border-8 border-dashed border-gray-300 bg-blue-900 p-2 text-white hover:border-gray-100 hover:bg-blue-800"
+    >
+      <div className="flex aspect-square w-20 items-center justify-center rounded-full bg-blue-800 p-2 text-4xl font-bold group-hover:bg-blue-700">
+        x2
+      </div>
+    </div>
+  );
+};
 
 const BetButton = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -167,6 +211,10 @@ const Dealer = () => {
   }, []);
 
   return (
-    <Player cards={cards} score={dealer?.hand?.score || 0} name="Dealer" />
+    <Player
+      cards={cards}
+      score={dealer?.faceupCard ? getCardValue(dealer.faceupCard) : 0}
+      name="Dealer"
+    />
   );
 };
