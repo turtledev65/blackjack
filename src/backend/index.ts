@@ -84,17 +84,17 @@ io.on("connection", socket => {
           "receive-dealer",
           currentRoom.toSimplifiedObject().dealer
         );
-        io.to(currentRoom.name).emit(
-          "update-players",
-          currentRoom.toSimplifiedObject().players
-        );
       }
+      io.to(currentRoom.name).emit(
+        "update-players",
+        currentRoom.toSimplifiedObject().players
+      );
     } catch (err) {
       handleError(err);
     }
   });
 
-  socket.on("hit", cb => {
+  socket.on("hit", () => {
     if (!currentRoom) {
       handleError("You have not joined a room yet");
       return;
@@ -102,13 +102,16 @@ io.on("connection", socket => {
 
     try {
       currentRoom.hitPlayer(socket);
-      cb("test");
+      io.to(currentRoom.name).emit(
+        "update-players",
+        currentRoom.toSimplifiedObject().players
+      );
     } catch (err) {
       handleError(err);
     }
   });
 
-  socket.on("stand", cb => {
+  socket.on("stand", () => {
     if (!currentRoom) {
       handleError("You have not joined a room yet");
       return;
@@ -116,13 +119,16 @@ io.on("connection", socket => {
 
     try {
       currentRoom.standPlayer(socket);
-      cb("test");
+      io.to(currentRoom.name).emit(
+        "update-players",
+        currentRoom.toSimplifiedObject().players
+      );
     } catch (err) {
       handleError(err);
     }
   });
 
-  socket.on("double-down", cb => {
+  socket.on("double-down", () => {
     if (!currentRoom) {
       handleError("You have not joined a room yet");
       return;
@@ -130,13 +136,16 @@ io.on("connection", socket => {
 
     try {
       currentRoom.doubleDown(socket);
-      cb("test");
+      io.to(currentRoom.name).emit(
+        "update-players",
+        currentRoom.toSimplifiedObject().players
+      );
     } catch (err) {
       handleError(err);
     }
   });
 
-  socket.on("insurance", cb => {
+  socket.on("insurance", () => {
     if (!currentRoom) {
       handleError("You have not joined a room yet");
       return;
@@ -144,28 +153,33 @@ io.on("connection", socket => {
 
     try {
       currentRoom.placeInsurance(socket);
-      cb("test");
+      io.to(currentRoom.name).emit(
+        "update-players",
+        currentRoom.toSimplifiedObject().players
+      );
     } catch (err) {
       handleError(err);
     }
   });
 
-  socket.on("surrender", cb => {
+  socket.on("surrender", () => {
     if (!currentRoom) {
       handleError("You have not joined a room yet");
-      cb();
       return;
     }
 
     try {
       currentRoom.surrender(socket);
-      cb("test");
+      io.to(currentRoom.name).emit(
+        "update-players",
+        currentRoom.toSimplifiedObject().players
+      );
     } catch (err) {
       handleError(err);
     }
   });
 
-  socket.on("split-pairs", cb => {
+  socket.on("split-pairs", () => {
     if (!currentRoom) {
       handleError("You have not joined a room yet");
       return;
@@ -173,7 +187,10 @@ io.on("connection", socket => {
 
     try {
       currentRoom.splitPairs(socket);
-      cb("test");
+      io.to(currentRoom.name).emit(
+        "update-players",
+        currentRoom.toSimplifiedObject().players
+      );
     } catch (err) {
       handleError(err);
     }
