@@ -26,8 +26,56 @@ const GamePage = () => {
     <>
       <div className="absolute inset-6 flex flex-col justify-between">
         <Dealer />
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ">
           <BetButton />
+          <button
+            className="rounded bg-red-800 px-4 py-1 text-xl text-white"
+            onClick={() => {
+              socket.emit("hit");
+            }}
+          >
+            Hit
+          </button>
+          <button
+            className="rounded bg-blue-800 px-4 py-1 text-xl text-white"
+            onClick={() => {
+              socket.emit("stand");
+            }}
+          >
+            Stand
+          </button>
+          <button
+            className="rounded bg-yellow-400 px-4 py-1 text-xl text-white"
+            onClick={() => {
+              socket.emit("double-down");
+            }}
+          >
+            Double Down
+          </button>
+          <button
+            className="rounded bg-green-500 px-4 py-1 text-xl text-white"
+            onClick={() => {
+              socket.emit("split-pairs");
+            }}
+          >
+            Split Pairs
+          </button>
+          <button
+            className="rounded bg-orange-500 px-4 py-1 text-xl text-white"
+            onClick={() => {
+              socket.emit("split-pairs");
+            }}
+          >
+            Insurance
+          </button>
+          <button
+            className="rounded bg-purple-500 px-4 py-1 text-xl text-white"
+            onClick={() => {
+              socket.emit("insurance");
+            }}
+          >
+            Surrender
+          </button>
         </div>
         <div className="flex justify-center gap-4">
           {players.map(player => (
@@ -36,6 +84,7 @@ const GamePage = () => {
               name={player.name}
               cards={player.hand.cards as Card[]}
               score={player.hand.score}
+              ballance={player.ballance}
             />
           ))}
         </div>
@@ -89,13 +138,15 @@ type PlayerProps = {
   name: string;
   cards?: Card[];
   score: number;
+  ballance?: number;
 };
-const Player = ({ name, cards, score }: PlayerProps) => {
+const Player = ({ name, cards, score, ballance }: PlayerProps) => {
   return (
     <div className="flex flex-col items-center gap-2">
       {score > 0 && <Score value={score} />}
       <CardContainer cards={cards || []} />
       <p className="text-xl text-gray-100">{name}</p>
+      <p className="mt-2 text-lg text-yellow-400">{ballance}</p>
     </div>
   );
 };
